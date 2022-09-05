@@ -25,8 +25,10 @@ jobs:
         with:
           arguments: --no-daemon packageUberJarForCurrentOS
       - name: Release
+        env:
+          jarPath: build/compose/jars/${{ matrix.jar }}
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            build/compose/jars/${{ matrix.jar }}
+            $jarPath
