@@ -19,7 +19,9 @@ fun JarPicker(
         modifier = Modifier.fillMaxSize()
     ) {
         Button({
-            pickFile()?.also { (dir, jar) ->
+            pickFile()
+                ?.takeIf { (_, jar) -> jar == "pokewilds.jar" || jar == "pokemon-wilds.jar" }
+                ?.also { (dir, jar) ->
                 viewModel.saveWildsDir(dir, jar)
             }
         }) {

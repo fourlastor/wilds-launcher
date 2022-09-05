@@ -36,7 +36,7 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "io.github.fourlastor.MainKt"
+        mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "wilds-launcher"
