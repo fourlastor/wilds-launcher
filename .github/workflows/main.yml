@@ -9,10 +9,9 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-
-        strategy:
-            matrix:
-                os: [ubuntu-latest, windows-latest, macos-latest]
+    strategy:
+        matrix:
+            os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -24,10 +23,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: --no-daemon packageUberJarForCurrentOS
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            $LINUX_ZIP
-            $WINDOWS_ZIP
+#       - name: Release
+#         uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+#         with:
+#           files: |
+#             $LINUX_ZIP
+#             $WINDOWS_ZIP
