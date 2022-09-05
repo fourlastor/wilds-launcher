@@ -21,7 +21,12 @@ class SettingsViewModel constructor(
         scope.launch {
             val data = repository.read()
             if (data != null) {
-                manager.update { SettingsState.Loaded(data.dir, data.jar) }
+                manager.update { SettingsState.Loaded(
+                    dir = data.dir,
+                    jar = data.jar,
+                    devMode = data.devMode,
+                    angleGles20 = data.angleGles20
+                ) }
             } else {
                 manager.update { SettingsState.Missing }
             }
@@ -29,7 +34,12 @@ class SettingsViewModel constructor(
             manager.state
                 .drop(1)
                 .mapNotNull { it as? SettingsState.Loaded }
-                .map { SettingsData(it.dir, it.jar) }
+                .map { SettingsData(
+                    dir = it.dir,
+                    jar = it.jar,
+                    devMode = it.devMode,
+                    angleGles20 = it.angleGles20
+                ) }
                 .collect { repository.save(it) }
         }
     }
@@ -42,5 +52,13 @@ class SettingsViewModel constructor(
 
     fun saveWildsDir(dir: String, jar: String) {
         manager.update { it.wildsDir(dir, jar) }
+    }
+
+    fun devMode(devMode: Boolean) {
+        manager.update { it.devMode(devMode) }
+    }
+
+    fun angleGles20(angleGles20: Boolean) {
+        manager.update { it.angleGles20(angleGles20) }
     }
 }

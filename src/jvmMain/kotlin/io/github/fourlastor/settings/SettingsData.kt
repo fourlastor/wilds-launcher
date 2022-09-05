@@ -6,4 +6,6 @@ import kotlinx.serialization.Serializable
 data class SettingsData(
     val dir: String,
     val jar: String,
+    val devMode: Boolean,
+    val angleGles20: Boolean,
 )
