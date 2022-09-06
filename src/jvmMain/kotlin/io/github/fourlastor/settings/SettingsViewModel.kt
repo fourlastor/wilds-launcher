@@ -90,13 +90,13 @@ class SettingsViewModel constructor(
 
                 val stdError = BufferedReader(InputStreamReader(proc.errorStream))
 
-                var s: String?
-                while (stdInput.readLine().also { s = it } != null) {
-                    appendLog(s!!)
+                var s = ""
+                while (stdInput.readLine()?.also { s = it } != null) {
+                    appendLog(s)
                 }
 
-                while (stdError.readLine().also { s = it } != null) {
-                    appendLog(s!!)
+                while (stdError.readLine()?.also { s = it } != null) {
+                    appendLog(s)
                 }
             }
         }
