@@ -7,5 +7,6 @@ data class SettingsData(
     val dir: String,
     val jar: String,
     val devMode: Boolean = false,
+    val logsEnabled: Boolean = false,
     val angleGles20: Boolean = false,
 )

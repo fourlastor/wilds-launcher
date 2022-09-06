@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
@@ -17,13 +19,16 @@ import io.github.fourlastor.settings.SettingsState
 fun Launcher(
     settingsState: SettingsState.Loaded,
     onDevModeChanged: (Boolean) -> Unit,
+    onLogsEnabledChanged: (Boolean) -> Unit,
     onAngleGles20Changed: (Boolean) -> Unit,
     runPokeWilds: (SettingsState.Loaded) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
             .padding(8.dp)
+            .verticalScroll(scrollState)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(
@@ -31,6 +36,13 @@ fun Launcher(
                 onCheckedChange = onDevModeChanged,
             )
             Text("Dev mode")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(
+                checked = settingsState.logsEnabled,
+                onCheckedChange = onLogsEnabledChanged,
+            )
+            Text("Enable logs")
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(
@@ -43,5 +55,7 @@ fun Launcher(
         Button({ runPokeWilds(settingsState) }) {
             Text("Start PokeWilds")
         }
+
+        Text(settingsState.logs)
     }
 }

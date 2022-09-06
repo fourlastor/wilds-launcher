@@ -10,7 +10,6 @@ import io.github.fourlastor.ui.JarPicker
 import io.github.fourlastor.ui.Launcher
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.File
 
 @Composable
 @Preview
@@ -24,11 +23,14 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     onDevModeChanged = {
                         viewModel.devMode(it)
                     },
+                    onLogsEnabledChanged = {
+                        viewModel.logsEnabled(it)
+                    },
                     onAngleGles20Changed = {
                         viewModel.angleGles20(it)
                     },
                     runPokeWilds = {
-                        runPokeWilds(it)
+                        viewModel.runPokeWilds(it)
                     }
                 )
 
@@ -36,22 +38,6 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
             }
         }
     }
-}
-
-private fun runPokeWilds(state: SettingsState.Loaded) {
-    val runArgs = mutableListOf("java", "-jar", state.jar).apply {
-        if (state.angleGles20) {
-            add("angle_gles20")
-        }
-        if (state.devMode) {
-            add("dev")
-        }
-    }.toTypedArray()
-    Runtime.getRuntime().exec(
-        runArgs,
-        null,
-        File(state.dir)
-    )
 }
 
 class AppComponent : KoinComponent {

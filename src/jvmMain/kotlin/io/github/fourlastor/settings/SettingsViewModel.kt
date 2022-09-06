@@ -2,13 +2,13 @@ package io.github.fourlastor.settings
 
 import io.github.fourlastor.state.Manager
 import io.github.fourlastor.state.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
 
 class SettingsViewModel constructor(
     private val repository: SettingsRepository,
@@ -21,12 +21,16 @@ class SettingsViewModel constructor(
         scope.launch {
             val data = repository.read()
             if (data != null) {
-                manager.update { SettingsState.Loaded(
-                    dir = data.dir,
-                    jar = data.jar,
-                    devMode = data.devMode,
-                    angleGles20 = data.angleGles20
-                ) }
+                manager.update {
+                    SettingsState.Loaded(
+                        dir = data.dir,
+                        jar = data.jar,
+                        devMode = data.devMode,
+                        logsEnabled = data.logsEnabled,
+                        angleGles20 = data.angleGles20,
+                        logs = ""
+                    )
+                }
             } else {
                 manager.update { SettingsState.Missing }
             }
@@ -34,12 +38,15 @@ class SettingsViewModel constructor(
             manager.state
                 .drop(1)
                 .mapNotNull { it as? SettingsState.Loaded }
-                .map { SettingsData(
-                    dir = it.dir,
-                    jar = it.jar,
-                    devMode = it.devMode,
-                    angleGles20 = it.angleGles20
-                ) }
+                .map {
+                    SettingsData(
+                        dir = it.dir,
+                        jar = it.jar,
+                        devMode = it.devMode,
+                        logsEnabled = it.logsEnabled,
+                        angleGles20 = it.angleGles20
+                    )
+                }
                 .collect { repository.save(it) }
         }
     }
@@ -58,7 +65,51 @@ class SettingsViewModel constructor(
         manager.update { it.devMode(devMode) }
     }
 
+    fun logsEnabled(logsEnabled: Boolean) {
+        manager.update { it.logsEnabled(logsEnabled) }
+    }
+
     fun angleGles20(angleGles20: Boolean) {
         manager.update { it.angleGles20(angleGles20) }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun runPokeWilds(state: SettingsState.Loaded) {
+        val runArgs = mutableListOf("java", "-jar", state.jar).apply {
+            if (state.angleGles20) {
+                add("angle_gles20")
+            }
+            if (state.devMode) {
+                add("dev")
+            }
+        }.toTypedArray()
+
+        scope.launch(newSingleThreadContext("pokeWildsJar")) {
+            val proc = Runtime.getRuntime().exec(
+                runArgs,
+                null,
+                File(state.dir)
+            )
+
+            if (state.logsEnabled) {
+                val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
+
+                val stdError = BufferedReader(InputStreamReader(proc.errorStream))
+
+                var s = ""
+                while (stdInput.readLine()?.also { s = it } != null) {
+                    appendLog(s)
+                }
+
+                while (stdError.readLine()?.also { s = it } != null) {
+                    appendLog(s)
+                }
+            }
+        }
+    }
+
+    private fun appendLog(log: String) {
+        println(log)
+        manager.update { it.appendLog(log) }
     }
 }
