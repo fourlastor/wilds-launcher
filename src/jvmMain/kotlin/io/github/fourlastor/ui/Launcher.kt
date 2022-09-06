@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
@@ -20,10 +22,12 @@ fun Launcher(
     onAngleGles20Changed: (Boolean) -> Unit,
     runPokeWilds: (SettingsState.Loaded) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
             .padding(8.dp)
+            .verticalScroll(scrollState)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(
@@ -43,5 +47,7 @@ fun Launcher(
         Button({ runPokeWilds(settingsState) }) {
             Text("Start PokeWilds")
         }
+
+        Text(settingsState.logs)
     }
 }

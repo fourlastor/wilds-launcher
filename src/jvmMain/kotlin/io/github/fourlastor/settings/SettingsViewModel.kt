@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 
 class SettingsViewModel constructor(
     private val repository: SettingsRepository,
@@ -22,12 +24,15 @@ class SettingsViewModel constructor(
         scope.launch {
             val data = repository.read()
             if (data != null) {
-                manager.update { SettingsState.Loaded(
-                    dir = data.dir,
-                    jar = data.jar,
-                    devMode = data.devMode,
-                    angleGles20 = data.angleGles20
-                ) }
+                manager.update {
+                    SettingsState.Loaded(
+                        dir = data.dir,
+                        jar = data.jar,
+                        devMode = data.devMode,
+                        angleGles20 = data.angleGles20,
+                        logs = ""
+                    )
+                }
             } else {
                 manager.update { SettingsState.Missing }
             }
@@ -35,12 +40,14 @@ class SettingsViewModel constructor(
             manager.state
                 .drop(1)
                 .mapNotNull { it as? SettingsState.Loaded }
-                .map { SettingsData(
-                    dir = it.dir,
-                    jar = it.jar,
-                    devMode = it.devMode,
-                    angleGles20 = it.angleGles20
-                ) }
+                .map {
+                    SettingsData(
+                        dir = it.dir,
+                        jar = it.jar,
+                        devMode = it.devMode,
+                        angleGles20 = it.angleGles20
+                    )
+                }
                 .collect { repository.save(it) }
         }
     }
@@ -79,6 +86,26 @@ class SettingsViewModel constructor(
                 null,
                 File(state.dir)
             )
+
+            if (state.devMode) {
+                val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
+
+                val stdError = BufferedReader(InputStreamReader(proc.errorStream))
+
+                var s: String?
+                while (stdInput.readLine().also { s = it } != null) {
+                    appendLog(s!!)
+                }
+
+                while (stdError.readLine().also { s = it } != null) {
+                    appendLog(s!!)
+                }
+            }
         }
+    }
+
+    private fun appendLog(log: String) {
+        println(log)
+        manager.update { it.appendLog(log) }
     }
 }
