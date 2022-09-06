@@ -2,13 +2,10 @@ package io.github.fourlastor.settings
 
 import io.github.fourlastor.state.Manager
 import io.github.fourlastor.state.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -70,6 +67,7 @@ class SettingsViewModel constructor(
         manager.update { it.angleGles20(angleGles20) }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun runPokeWilds(state: SettingsState.Loaded) {
         val runArgs = mutableListOf("java", "-jar", state.jar).apply {
             if (state.angleGles20) {
@@ -80,7 +78,7 @@ class SettingsViewModel constructor(
             }
         }.toTypedArray()
 
-        scope.launch(Dispatchers.IO) {
+        scope.launch(newSingleThreadContext("pokeWildsJar")) {
             val proc = Runtime.getRuntime().exec(
                 runArgs,
                 null,
