@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import java.io.File
 
 class SettingsViewModel constructor(
     private val repository: SettingsRepository,
@@ -60,5 +61,24 @@ class SettingsViewModel constructor(
 
     fun angleGles20(angleGles20: Boolean) {
         manager.update { it.angleGles20(angleGles20) }
+    }
+
+    override fun runPokeWilds(state: SettingsState.Loaded) {
+        val runArgs = mutableListOf("java", "-jar", state.jar).apply {
+            if (state.angleGles20) {
+                add("angle_gles20")
+            }
+            if (state.devMode) {
+                add("dev")
+            }
+        }.toTypedArray()
+
+        scope.launch(Dispatchers.IO) {
+            val proc = Runtime.getRuntime().exec(
+                runArgs,
+                null,
+                File(state.dir)
+            )
+        }
     }
 }
