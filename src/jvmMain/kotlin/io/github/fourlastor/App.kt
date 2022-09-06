@@ -23,6 +23,9 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     onDevModeChanged = {
                         viewModel.devMode(it)
                     },
+                    onLogsEnabledChanged = {
+                        viewModel.logsEnabled(it)
+                    },
                     onAngleGles20Changed = {
                         viewModel.angleGles20(it)
                     },

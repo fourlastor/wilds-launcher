@@ -19,6 +19,7 @@ import io.github.fourlastor.settings.SettingsState
 fun Launcher(
     settingsState: SettingsState.Loaded,
     onDevModeChanged: (Boolean) -> Unit,
+    onLogsEnabledChanged: (Boolean) -> Unit,
     onAngleGles20Changed: (Boolean) -> Unit,
     runPokeWilds: (SettingsState.Loaded) -> Unit,
 ) {
@@ -35,6 +36,13 @@ fun Launcher(
                 onCheckedChange = onDevModeChanged,
             )
             Text("Dev mode")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(
+                checked = settingsState.logsEnabled,
+                onCheckedChange = onLogsEnabledChanged,
+            )
+            Text("Enable logs")
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(

@@ -6,11 +6,13 @@ sealed class SettingsState {
         dir = dir,
         jar = jar,
         devMode = false,
+        logsEnabled = false,
         angleGles20 = false,
         logs = ""
     )
 
     open fun devMode(devMode: Boolean) = this
+    open fun logsEnabled(logsEnabled: Boolean) = this
     open fun angleGles20(angleGles20: Boolean) = this
     open fun appendLog(log: String) = this
 
@@ -20,6 +22,7 @@ sealed class SettingsState {
         val dir: String,
         val jar: String,
         val devMode: Boolean,
+        val logsEnabled: Boolean,
         val angleGles20: Boolean,
         val logs: String
     ) : SettingsState() {
@@ -30,6 +33,10 @@ sealed class SettingsState {
 
         override fun devMode(devMode: Boolean) = copy(
             devMode = devMode
+        )
+
+        override fun logsEnabled(logsEnabled: Boolean) = copy(
+            logsEnabled = logsEnabled
         )
 
         override fun angleGles20(angleGles20: Boolean) = copy(

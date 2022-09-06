@@ -26,6 +26,7 @@ class SettingsViewModel constructor(
                         dir = data.dir,
                         jar = data.jar,
                         devMode = data.devMode,
+                        logsEnabled = data.logsEnabled,
                         angleGles20 = data.angleGles20,
                         logs = ""
                     )
@@ -42,6 +43,7 @@ class SettingsViewModel constructor(
                         dir = it.dir,
                         jar = it.jar,
                         devMode = it.devMode,
+                        logsEnabled = it.logsEnabled,
                         angleGles20 = it.angleGles20
                     )
                 }
@@ -61,6 +63,10 @@ class SettingsViewModel constructor(
 
     fun devMode(devMode: Boolean) {
         manager.update { it.devMode(devMode) }
+    }
+
+    fun logsEnabled(logsEnabled: Boolean) {
+        manager.update { it.logsEnabled(logsEnabled) }
     }
 
     fun angleGles20(angleGles20: Boolean) {
@@ -85,7 +91,7 @@ class SettingsViewModel constructor(
                 File(state.dir)
             )
 
-            if (state.devMode) {
+            if (state.logsEnabled) {
                 val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
 
                 val stdError = BufferedReader(InputStreamReader(proc.errorStream))
