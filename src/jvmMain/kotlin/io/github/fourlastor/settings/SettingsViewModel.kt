@@ -85,11 +85,9 @@ class SettingsViewModel constructor(
         }.toTypedArray()
 
         scope.launch(newSingleThreadContext("pokeWildsJar")) {
-            val proc = Runtime.getRuntime().exec(
-                runArgs,
-                null,
-                File(state.dir)
-            )
+            val proc = ProcessBuilder(*runArgs)
+                .directory(File(state.dir))
+                .start()
 
             if (state.logsEnabled) {
                 val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
