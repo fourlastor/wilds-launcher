@@ -82,7 +82,8 @@ class SettingsViewModel constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun runPokeWilds(state: SettingsState.Loaded) {
-        val runArgs = mutableListOf("java", "-jar", state.jar).apply {
+        val jarFile = File(File(state.dir), state.jar)
+        val runArgs = mutableListOf("java", "-jar", jarFile.absolutePath).apply {
             if (state.angleGles20) {
                 add("angle_gles20")
             }
@@ -92,25 +93,42 @@ class SettingsViewModel constructor(
         }.toTypedArray()
 
         scope.launch(newSingleThreadContext("pokeWildsJar")) {
-            val proc = Runtime.getRuntime().exec(
-                runArgs,
-                null,
-                File(state.dir)
-            )
-
-            if (state.logsEnabled) {
-                val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
-
-                val stdError = BufferedReader(InputStreamReader(proc.errorStream))
-
-                var s = ""
-                while (stdInput.readLine()?.also { s = it } != null) {
-                    appendLog(s)
+            try {
+                if (state.logsEnabled) {
+                    appendLog("Running ${runArgs.joinToString(" ")}")
                 }
-
-                while (stdError.readLine()?.also { s = it } != null) {
-                    appendLog(s)
+                val proc = ProcessBuilder(*runArgs)
+                    .directory(File(state.dir))
+                    .start()
+                captureLogs(state, proc)
+            } catch (exception: Throwable) {
+                if (state.logsEnabled) {
+                    appendLog(exception.fullTrace())
                 }
+            }
+
+        }
+    }
+
+    private fun Throwable.fullTrace(): String = """
+        $message
+        ${stackTraceToString()}
+        ${cause?.also { "Caused by: ${it.fullTrace()}" }}
+    """.trimIndent()
+
+    private fun captureLogs(state: SettingsState.Loaded, proc: Process) {
+        if (state.logsEnabled) {
+            val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
+
+            val stdError = BufferedReader(InputStreamReader(proc.errorStream))
+
+            var s = ""
+            while (stdInput.readLine()?.also { s = it } != null) {
+                appendLog(s)
+            }
+
+            while (stdError.readLine()?.also { s = it } != null) {
+                appendLog(s)
             }
         }
     }
