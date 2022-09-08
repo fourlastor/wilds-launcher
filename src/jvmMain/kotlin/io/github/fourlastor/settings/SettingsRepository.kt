@@ -30,6 +30,10 @@ class SettingsRepository constructor(
             .writeText(Json.encodeToString(state))
     }
 
+    suspend fun clear() = withContext(dispatchers.IO) {
+        configFile().delete()
+    }
+
     private fun configFile(): File {
         return File(dirs.config, "config.json")
     }

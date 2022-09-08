@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.fourlastor.settings.SettingsState
 
@@ -22,6 +23,7 @@ fun Launcher(
     onLogsEnabledChanged: (Boolean) -> Unit,
     onAngleGles20Changed: (Boolean) -> Unit,
     runPokeWilds: (SettingsState.Loaded) -> Unit,
+    clearData: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -54,6 +56,10 @@ fun Launcher(
 
         Button({ runPokeWilds(settingsState) }) {
             Text("Start PokeWilds")
+        }
+
+        Button({ clearData() }) {
+            Text(text = "Clear launcher data", color = Color.Red)
         }
 
         Text(settingsState.logs)

@@ -31,10 +31,14 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     },
                     runPokeWilds = {
                         viewModel.runPokeWilds(it)
+                    },
+                    clearData = {
+                        viewModel.clearData()
                     }
                 )
 
                 is SettingsState.Missing -> JarPicker(getPokeWildsLocation, viewModel)
+                is SettingsState.Loading -> {}
             }
         }
     }
