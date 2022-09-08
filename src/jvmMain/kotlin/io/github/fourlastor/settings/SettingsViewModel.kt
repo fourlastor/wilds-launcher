@@ -87,13 +87,17 @@ class SettingsViewModel constructor(
 
         scope.launch(newSingleThreadContext("pokeWildsJar")) {
             try {
-                appendLog("Running ${runArgs.joinToString(" ")}")
+                if (state.logsEnabled) {
+                    appendLog("Running ${runArgs.joinToString(" ")}")
+                }
                 val proc = ProcessBuilder(*runArgs)
                     .directory(File(state.dir))
                     .start()
                 captureLogs(state, proc)
             } catch (exception: Throwable) {
-                appendLog(exception.fullTrace())
+                if (state.logsEnabled) {
+                    appendLog(exception.fullTrace())
+                }
             }
 
         }
