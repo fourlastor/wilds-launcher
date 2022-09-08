@@ -86,6 +86,7 @@ class SettingsViewModel constructor(
 
         scope.launch(newSingleThreadContext("pokeWildsJar")) {
             try {
+                appendLog("Running ${runArgs.joinToString(" ")}")
                 val proc = ProcessBuilder(*runArgs)
                     .directory(File(state.dir))
                     .start()
