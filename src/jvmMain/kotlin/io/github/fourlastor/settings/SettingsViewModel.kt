@@ -85,23 +85,37 @@ class SettingsViewModel constructor(
         }.toTypedArray()
 
         scope.launch(newSingleThreadContext("pokeWildsJar")) {
-            val proc = ProcessBuilder(*runArgs)
-                .directory(File(state.dir))
-                .start()
+            try {
+                val proc = ProcessBuilder(*runArgs)
+                    .directory(File(state.dir))
+                    .start()
+                captureLogs(state, proc)
+            } catch (exception: Throwable) {
+                appendLog(exception.fullTrace())
+            }
 
-            if (state.logsEnabled) {
-                val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
+        }
+    }
 
-                val stdError = BufferedReader(InputStreamReader(proc.errorStream))
+    private fun Throwable.fullTrace(): String = """
+        $message
+        ${stackTraceToString()}
+        ${cause?.also { "Caused by: ${it.fullTrace()}" }}
+    """.trimIndent()
 
-                var s = ""
-                while (stdInput.readLine()?.also { s = it } != null) {
-                    appendLog(s)
-                }
+    private fun captureLogs(state: SettingsState.Loaded, proc: Process) {
+        if (state.logsEnabled) {
+            val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
 
-                while (stdError.readLine()?.also { s = it } != null) {
-                    appendLog(s)
-                }
+            val stdError = BufferedReader(InputStreamReader(proc.errorStream))
+
+            var s = ""
+            while (stdInput.readLine()?.also { s = it } != null) {
+                appendLog(s)
+            }
+
+            while (stdError.readLine()?.also { s = it } != null) {
+                appendLog(s)
             }
         }
     }
