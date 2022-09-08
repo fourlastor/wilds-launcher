@@ -1,4 +1,4 @@
-package io.github.fourlastor.state
+package io.github.fourlastor.wilds_launcher.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
