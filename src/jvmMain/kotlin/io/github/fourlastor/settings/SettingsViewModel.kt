@@ -73,6 +73,13 @@ class SettingsViewModel constructor(
         manager.update { it.angleGles20(angleGles20) }
     }
 
+    fun clearData() {
+        scope.launch {
+            repository.clear()
+            manager.update { SettingsState.Missing }
+        }
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     override fun runPokeWilds(state: SettingsState.Loaded) {
         val runArgs = mutableListOf("java", "-jar", state.jar).apply {
