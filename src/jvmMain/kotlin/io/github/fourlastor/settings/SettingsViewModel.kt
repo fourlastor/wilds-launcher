@@ -82,6 +82,7 @@ class SettingsViewModel constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun runPokeWilds(state: SettingsState.Loaded) {
+
         val jarFile = File(File(state.dir), state.jar)
         val runArgs = mutableListOf("java", "-jar", jarFile.absolutePath).apply {
             if (state.angleGles20) {
@@ -97,7 +98,9 @@ class SettingsViewModel constructor(
                 if (state.logsEnabled) {
                     appendLog("Running ${runArgs.joinToString(" ")}")
                 }
-                val proc = ProcessBuilder(*runArgs)
+                val proc = ProcessBuilder(*runArgs).also {
+                    it.environment().forEach { (key, value) -> appendLog("$key:$value") }
+                }
                     .directory(File(state.dir))
                     .start()
                 captureLogs(state, proc)
