@@ -7,10 +7,10 @@ plugins {
     kotlin("plugin.serialization") version "1.6.10"
 }
 
-val gameVersion = requireNotNull(property("io.github.fourlastor.wilds_launcher.version") as? String)
+val appVersion = requireNotNull(property("io.github.fourlastor.wilds_launcher.version") as? String)
 
 group = "io.github.fourlastor.wilds-launcher"
-version = gameVersion
+version = appVersion
 
 repositories {
     google()
@@ -43,7 +43,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "wilds-launcher"
-            packageVersion = gameVersion
+            packageVersion = appVersion
         }
     }
 }
