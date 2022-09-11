@@ -1,4 +1,4 @@
-package io.github.fourlastor.settings
+package io.github.fourlastor.wilds_launcher.settings
 
 sealed class SettingsState {
 

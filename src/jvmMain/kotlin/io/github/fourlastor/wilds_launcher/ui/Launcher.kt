@@ -1,4 +1,4 @@
-package io.github.fourlastor.ui
+package io.github.fourlastor.wilds_launcher.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.github.fourlastor.settings.SettingsState
+import io.github.fourlastor.wilds_launcher.settings.SettingsState
 
 @Composable
 fun Launcher(

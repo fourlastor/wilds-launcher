@@ -1,4 +1,4 @@
-package io.github.fourlastor.state
+package io.github.fourlastor.wilds_launcher.state
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

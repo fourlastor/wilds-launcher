@@ -1,7 +1,7 @@
-package io.github.fourlastor.settings
+package io.github.fourlastor.wilds_launcher.settings
 
-import io.github.fourlastor.state.Manager
-import io.github.fourlastor.state.ViewModel
+import io.github.fourlastor.wilds_launcher.state.Manager
+import io.github.fourlastor.wilds_launcher.state.ViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map

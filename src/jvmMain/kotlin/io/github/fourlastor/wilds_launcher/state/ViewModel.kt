@@ -1,6 +1,6 @@
-package io.github.fourlastor.state
+package io.github.fourlastor.wilds_launcher.state
 
-import io.github.fourlastor.settings.SettingsState
+import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import kotlinx.coroutines.flow.StateFlow
 
 interface ViewModel<State> {

@@ -1,11 +1,11 @@
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import io.github.fourlastor.App
-import io.github.fourlastor.AppComponent
-import io.github.fourlastor.settings.Dirs
-import io.github.fourlastor.settings.SettingsRepository
-import io.github.fourlastor.settings.SettingsViewModel
+import io.github.fourlastor.wilds_launcher.App
+import io.github.fourlastor.wilds_launcher.AppComponent
+import io.github.fourlastor.wilds_launcher.settings.Dirs
+import io.github.fourlastor.wilds_launcher.settings.SettingsRepository
+import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import net.harawata.appdirs.AppDirsFactory
 import org.koin.core.context.startKoin

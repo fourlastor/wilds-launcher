@@ -1,13 +1,13 @@
-package io.github.fourlastor
+package io.github.fourlastor.wilds_launcher
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import io.github.fourlastor.settings.SettingsState
-import io.github.fourlastor.settings.SettingsViewModel
-import io.github.fourlastor.state.ViewModelContainer
-import io.github.fourlastor.ui.JarPicker
-import io.github.fourlastor.ui.Launcher
+import io.github.fourlastor.wilds_launcher.settings.SettingsState
+import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
+import io.github.fourlastor.wilds_launcher.state.ViewModelContainer
+import io.github.fourlastor.wilds_launcher.ui.JarPicker
+import io.github.fourlastor.wilds_launcher.ui.Launcher
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
