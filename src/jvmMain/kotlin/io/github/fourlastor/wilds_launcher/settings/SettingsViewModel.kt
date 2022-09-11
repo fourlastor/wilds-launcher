@@ -99,6 +99,7 @@ class SettingsViewModel constructor(
                 if (state.logsEnabled) {
                     appendLog("Running ${runArgs.joinToString(" ")}")
                 }
+                @Suppress("BlockingMethodInNonBlockingContext") // it's a new thread
                 val proc = ProcessBuilder(*runArgs)
                     .directory(File(state.dir))
                     .start()
