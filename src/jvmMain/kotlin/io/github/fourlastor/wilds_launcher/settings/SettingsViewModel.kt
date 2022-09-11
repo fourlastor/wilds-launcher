@@ -85,7 +85,13 @@ class SettingsViewModel constructor(
     @OptIn(DelicateCoroutinesApi::class)
     override fun runPokeWilds(state: SettingsState.Loaded) {
         val jarFile = File(File(state.dir), state.jar)
-        val runArgs = mutableListOf("java", "-jar", jarFile.absolutePath).apply {
+        val java = state.java
+            .trim()
+            .takeIf { it.isNotEmpty() }
+            ?.takeIf { File(it).exists() }
+            ?: "java"
+
+        val runArgs = mutableListOf(java, "-jar", jarFile.absolutePath).apply {
             if (state.angleGles20) {
                 add("angle_gles20")
             }
