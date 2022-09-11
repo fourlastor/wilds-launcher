@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ fun Launcher(
     onDevModeChanged: (Boolean) -> Unit,
     onLogsEnabledChanged: (Boolean) -> Unit,
     onAngleGles20Changed: (Boolean) -> Unit,
+    onJavaChanged: (String) -> Unit,
     runPokeWilds: (SettingsState.Loaded) -> Unit,
     clearData: () -> Unit,
 ) {
@@ -32,6 +34,13 @@ fun Launcher(
             .padding(8.dp)
             .verticalScroll(scrollState)
     ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Java location")
+            TextField(
+                value = settingsState.java,
+                onValueChange = onJavaChanged,
+            )
+        }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(
                 checked = settingsState.devMode,

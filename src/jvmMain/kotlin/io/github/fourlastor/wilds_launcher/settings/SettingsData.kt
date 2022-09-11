@@ -9,4 +9,5 @@ data class SettingsData(
     val devMode: Boolean = false,
     val logsEnabled: Boolean = false,
     val angleGles20: Boolean = false,
+    val java: String = "",
 )

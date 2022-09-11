@@ -29,6 +29,7 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     onAngleGles20Changed = {
                         viewModel.angleGles20(it)
                     },
+                    onJavaChanged = { viewModel.java(it) },
                     runPokeWilds = {
                         viewModel.runPokeWilds(it)
                     },

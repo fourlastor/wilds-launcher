@@ -8,12 +8,14 @@ sealed class SettingsState {
         devMode = false,
         logsEnabled = false,
         angleGles20 = false,
-        logs = ""
+        logs = "",
+        java = "",
     )
 
     open fun devMode(devMode: Boolean) = this
     open fun logsEnabled(logsEnabled: Boolean) = this
     open fun angleGles20(angleGles20: Boolean) = this
+    open fun java(java: String) = this
     open fun appendLog(log: String) = this
 
     object Loading : SettingsState()
@@ -24,7 +26,8 @@ sealed class SettingsState {
         val devMode: Boolean,
         val logsEnabled: Boolean,
         val angleGles20: Boolean,
-        val logs: String
+        val logs: String,
+        val java: String,
     ) : SettingsState() {
         override fun wildsDir(dir: String, jar: String) = copy(
             dir = dir,
@@ -42,6 +45,8 @@ sealed class SettingsState {
         override fun angleGles20(angleGles20: Boolean) = copy(
             angleGles20 = angleGles20
         )
+
+        override fun java(java: String) = copy(java = java)
 
         override fun appendLog(log: String) = copy(
             logs = "$logs\n$log"

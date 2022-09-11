@@ -28,7 +28,8 @@ class SettingsViewModel constructor(
                         devMode = data.devMode,
                         logsEnabled = data.logsEnabled,
                         angleGles20 = data.angleGles20,
-                        logs = ""
+                        java = data.java,
+                        logs = "",
                     )
                 }
             } else {
@@ -44,7 +45,8 @@ class SettingsViewModel constructor(
                         jar = it.jar,
                         devMode = it.devMode,
                         logsEnabled = it.logsEnabled,
-                        angleGles20 = it.angleGles20
+                        angleGles20 = it.angleGles20,
+                        java = it.java,
                     )
                 }
                 .collect { repository.save(it) }
@@ -136,5 +138,9 @@ class SettingsViewModel constructor(
     private fun appendLog(log: String) {
         println(log)
         manager.update { it.appendLog(log) }
+    }
+
+    fun java(java: String) {
+        manager.update { it.java(java) }
     }
 }
