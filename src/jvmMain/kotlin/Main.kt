@@ -12,6 +12,8 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import java.awt.FileDialog
 
+const val TITLE = "PokeWilds Launcher"
+
 fun main() {
     val module = module {
         single { AppDirsFactory.getInstance() }
@@ -25,7 +27,7 @@ fun main() {
         modules(module)
     }
     application {
-        Window(title = "PokeWilds launcher", onCloseRequest = ::exitApplication) {
+        Window(title = TITLE, onCloseRequest = ::exitApplication) {
             App(AppComponent()) { pickFile() }
         }
     }
