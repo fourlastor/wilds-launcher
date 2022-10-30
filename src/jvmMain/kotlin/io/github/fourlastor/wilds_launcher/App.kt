@@ -6,9 +6,7 @@ import androidx.compose.runtime.Composable
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 import io.github.fourlastor.wilds_launcher.state.ViewModelContainer
-import io.github.fourlastor.wilds_launcher.ui.Downloader
-import io.github.fourlastor.wilds_launcher.ui.JarPicker
-import io.github.fourlastor.wilds_launcher.ui.Launcher
+import io.github.fourlastor.wilds_launcher.ui.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -38,6 +36,14 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                         viewModel.clearData()
                     }
                 )
+
+                /*is SettingsState.Downloading -> YesNoDialog(
+                    arrayOf("There is an update available.", "Do you want to download it?"),
+                    { viewModel.manager.update { SettingsState.NoUpdateAvailable }},
+                    { viewModel.manager.update { SettingsState.NoUpdateAvailable }}
+                )
+
+                is SettingsState.NoUpdateAvailable -> OkDialog(arrayOf("No available update found.")) { viewModel.manager.update { SettingsState.Missing } }*/
 
                 is SettingsState.Downloading -> Downloader(viewModel)
                 is SettingsState.Missing -> JarPicker(getPokeWildsLocation, viewModel)
