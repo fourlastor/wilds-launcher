@@ -17,6 +17,9 @@ sealed class SettingsState {
     open fun appendLog(log: String) = this
 
     object Downloading : SettingsState()
+    object CheckingForUpdates : SettingsState()
+    object NoUpdatesFound : SettingsState()
+    object UpdateFound : SettingsState()
     object Loading : SettingsState()
     object Missing : SettingsState()
     data class Loaded(

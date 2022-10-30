@@ -37,15 +37,17 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     }
                 )
 
-                /*is SettingsState.Downloading -> YesNoDialog(
-                    arrayOf("There is an update available.", "Do you want to download it?"),
-                    { viewModel.manager.update { SettingsState.NoUpdateAvailable }},
-                    { viewModel.manager.update { SettingsState.NoUpdateAvailable }}
+                is SettingsState.Downloading -> Downloader(viewModel)
+
+                is SettingsState.CheckingForUpdates -> UpdateChecker(viewModel)
+                is SettingsState.NoUpdatesFound -> OkDialog(arrayOf("No available update found.")) { viewModel.manager.update { SettingsState.Missing } }
+
+                is SettingsState.UpdateFound -> YesNoDialog(
+                    arrayOf("There is an update available (${getLatestReleaseVersion()}).", "Do you want to download it?"),
+                    { viewModel.manager.update { SettingsState.Downloading } },
+                    { viewModel.manager.update { SettingsState.Missing } }
                 )
 
-                is SettingsState.NoUpdateAvailable -> OkDialog(arrayOf("No available update found.")) { viewModel.manager.update { SettingsState.Missing } }*/
-
-                is SettingsState.Downloading -> Downloader(viewModel)
                 is SettingsState.Missing -> JarPicker(getPokeWildsLocation, viewModel)
                 is SettingsState.Loading -> {}
             }
