@@ -2,13 +2,14 @@ package io.github.fourlastor.wilds_launcher.settings
 
 import io.github.fourlastor.wilds_launcher.state.Manager
 import io.github.fourlastor.wilds_launcher.state.ViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 import java.io.File
-import java.io.InputStream
-import java.io.InputStreamReader
 
 class SettingsViewModel constructor(
     private val repository: SettingsRepository,
@@ -87,19 +88,5 @@ class SettingsViewModel constructor(
             repository.clear()
             manager.update { SettingsState.Missing }
         }
-    }
-
-    fun captureLogs(state: SettingsState.Loaded, stream: InputStream) {
-        val reader = InputStreamReader(stream).buffered()
-        var line = ""
-
-        while (reader.readLine()?.also { line = it } != null) {
-            appendLog(state, line)
-        }
-    }
-
-    fun appendLog(state: SettingsState.Loaded, log: String) {
-        println(log)
-        state.appendLog(log)
     }
 }

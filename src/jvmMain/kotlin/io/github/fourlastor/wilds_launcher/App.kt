@@ -29,8 +29,13 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     onAngleGles20Changed = {
                         viewModel.angleGles20(it)
                     },
-                    runPokeWilds = {
-                        runPokeWilds(viewModel, it)
+                    runPokeWilds = { state ->
+                        if (state.logsEnabled) {
+                            runPokeWilds(viewModel, state) { state.appendLog(it) }
+                        }
+                        else {
+                            runPokeWilds(viewModel, state)
+                        }
                     },
                     clearData = {
                         viewModel.clearData()

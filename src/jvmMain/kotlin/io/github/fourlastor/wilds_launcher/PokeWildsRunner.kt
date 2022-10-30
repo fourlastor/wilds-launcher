@@ -6,7 +6,7 @@ import kotlinx.coroutines.*
 import java.io.File
 
 @OptIn(DelicateCoroutinesApi::class)
-fun runPokeWilds(viewModel : SettingsViewModel, state: SettingsState.Loaded) {
+fun runPokeWilds(viewModel : SettingsViewModel, state: SettingsState.Loaded, log: ((String) -> Unit)? = null) {
     val jarFile = File(File(state.dir), state.jar)
     val runArgs = mutableListOf("java", "-jar", jarFile.absolutePath).apply {
         if (state.angleGles20) {
@@ -19,23 +19,20 @@ fun runPokeWilds(viewModel : SettingsViewModel, state: SettingsState.Loaded) {
 
     viewModel.scope.launch(newSingleThreadContext("pokeWildsJar")) {
         try {
-            if (state.logsEnabled) {
-                viewModel.appendLog(state, "Running ${runArgs.joinToString(" ")}")
-            }
+            log?.invoke("Running ${runArgs.joinToString(" ")}")
+
             val proc = withContext(Dispatchers.IO) {
                 ProcessBuilder(*runArgs)
                     .directory(File(state.dir))
                     .start()
             }
 
-            if (state.logsEnabled) {
-                viewModel.captureLogs(state, proc.inputStream)
-                viewModel.captureLogs(state, proc.errorStream)
+            if (log != null) {
+                proc.inputStream.capture(log)
+                proc.errorStream.capture(log)
             }
         } catch (exception: Throwable) {
-            if (state.logsEnabled) {
-                viewModel.appendLog(state, exception.fullTrace())
-            }
+            log?.invoke(exception.fullTrace())
         }
     }
 }
