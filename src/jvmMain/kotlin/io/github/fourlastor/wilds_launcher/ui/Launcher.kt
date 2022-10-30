@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -76,8 +77,8 @@ fun Launcher(
             }
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                Button({ clearData() }) {
-                    Text(text = "Clear launcher data", color = Color.Red)
+                Button({ clearData() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray, contentColor = Color.Red)) {
+                    Text(text = "Clear launcher data")
                 }
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
