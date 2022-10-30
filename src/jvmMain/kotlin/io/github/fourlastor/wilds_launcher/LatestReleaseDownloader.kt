@@ -22,7 +22,7 @@ fun getLatestVersion() : String? {
     connection.readTimeout = 5000
 
     if (connection.responseCode >= 300) {
-        return null;
+        return null
     }
 
     val response = connection.inputStream.bufferedReader().use { it.readText() }
@@ -39,7 +39,7 @@ fun downloadLatestRelease() {
 
     if (latestVersion == null) {
         println("Could not get latest version.")
-        return;
+        return
     }
 
     val filename = "pokemon-wilds-windows64.zip"
