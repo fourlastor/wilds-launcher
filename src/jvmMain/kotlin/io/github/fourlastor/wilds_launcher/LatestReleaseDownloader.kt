@@ -40,6 +40,19 @@ fun getLatestVersion() : String? {
     return version
 }
 
+private fun getFilenameWithoutExtension() : String {
+    // TODO: What is the difference?
+
+    //val filenameWithoutExtension = "pokewilds-"
+    val filenameWithoutExtension = "pokemon-wilds-"
+
+    return when (getOperatingSystem()) {
+        OperatingSystem.Windows -> filenameWithoutExtension + "windows64"
+        OperatingSystem.Linux -> filenameWithoutExtension + "linux64"
+        else -> filenameWithoutExtension + "otherplatforms"
+    }
+}
+
 fun downloadLatestRelease() : File? {
     val latestVersion = getLatestVersion()
 
@@ -48,7 +61,7 @@ fun downloadLatestRelease() : File? {
         return null
     }
 
-    val filenameWithoutExtension = "pokemon-wilds-windows64"
+    val filenameWithoutExtension = getFilenameWithoutExtension()
     val filename = "$filenameWithoutExtension.zip"
 
     val url = URL("https://github.com/$OWNER/$REPOSITORY/releases/download/$latestVersion/$filename")
