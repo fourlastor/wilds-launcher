@@ -28,8 +28,11 @@ fun JarPicker(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button({
-                val file = downloadLatestRelease() ?: return@Button
-                viewModel.saveWildsDir(file.path + File.separator + "pokewilds-v0.8.6-windows-64" + File.separator + "app", FILENAME)
+                val rootDirectory = downloadLatestRelease() ?: return@Button
+                val gameDirectory = rootDirectory.walk().first()
+                val appDirectory = gameDirectory.path + File.separator + "app"
+
+                viewModel.saveWildsDir(appDirectory, FILENAME)
             }) {
                 Text("Download latest release")
             }

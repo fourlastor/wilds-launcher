@@ -57,16 +57,6 @@ fun downloadLatestRelease() : File? {
 
     val file = File(filename)
 
-    if (file.exists()) {
-        if (file.length().toInt() != totalBytesToDownload) {
-            println("The latest release has a different file size than the currently downloaded one. Your current might be corrupt?")
-        }
-        else {
-            println("The latest release is already downloaded.")
-            return null
-        }
-    }
-
     println("Starting download of latest release.")
 
     BufferedInputStream(connection.getInputStream()).use { bufferedInputStream ->
