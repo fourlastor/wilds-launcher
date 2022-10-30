@@ -1,7 +1,9 @@
 package io.github.fourlastor.wilds_launcher
 
+import java.util.*
+
 fun getOperatingSystem() : OperatingSystem {
-    val name = System.getProperty("os.name").toLowerCase()
+    val name = System.getProperty("os.name").lowercase(Locale.getDefault())
 
     return when {
         name.contains("win") -> OperatingSystem.Windows
