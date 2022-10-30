@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 import io.github.fourlastor.wilds_launcher.state.ViewModelContainer
+import io.github.fourlastor.wilds_launcher.ui.Downloader
 import io.github.fourlastor.wilds_launcher.ui.JarPicker
 import io.github.fourlastor.wilds_launcher.ui.Launcher
 import org.koin.core.component.KoinComponent
@@ -38,6 +39,7 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     }
                 )
 
+                is SettingsState.Downloading -> Downloader(viewModel)
                 is SettingsState.Missing -> JarPicker(getPokeWildsLocation, viewModel)
                 is SettingsState.Loading -> {}
             }

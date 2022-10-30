@@ -7,7 +7,7 @@ import java.net.URL
 
 const val READ_SIZE_IN_BYTES = 1024
 
-fun downloadLatestRelease() : File? {
+fun downloadLatestRelease(onProgressChanged: (Float) -> Unit) : File? {
     val version = getLatestReleaseVersion()
 
     if (version == null) {
@@ -37,7 +37,10 @@ fun downloadLatestRelease() : File? {
                 fileOutputStream.write(bytes, 0, downloadedBytes)
                 totalBytesDownloaded += downloadedBytes
 
-                println("$totalBytesDownloaded/$totalBytesToDownload (${kotlin.math.floor((totalBytesDownloaded.toFloat() / totalBytesToDownload.toFloat()) * 100).toInt()}%) bytes downloaded...")
+                val progress = (totalBytesDownloaded.toFloat() / totalBytesToDownload.toFloat())
+                println("$totalBytesDownloaded/$totalBytesToDownload (${kotlin.math.floor(progress * 100).toInt()}%) bytes downloaded...")
+
+                onProgressChanged(progress)
             }
         }
     }

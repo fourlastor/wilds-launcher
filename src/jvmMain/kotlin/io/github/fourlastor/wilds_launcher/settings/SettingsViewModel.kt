@@ -14,8 +14,8 @@ class SettingsViewModel constructor(
     private val repository: SettingsRepository,
     dispatchers: Dispatchers,
 ) : ViewModel<SettingsState> {
-    private val scope = CoroutineScope(dispatchers.Default)
-    private val manager = Manager<SettingsState>(SettingsState.Loading)
+    val scope = CoroutineScope(dispatchers.Default)
+    val manager = Manager<SettingsState>(SettingsState.Loading)
 
     override fun start() {
         scope.launch {
@@ -97,9 +97,11 @@ class SettingsViewModel constructor(
                 if (state.logsEnabled) {
                     appendLog("Running ${runArgs.joinToString(" ")}")
                 }
-                val proc = ProcessBuilder(*runArgs)
-                    .directory(File(state.dir))
-                    .start()
+                val proc = withContext(Dispatchers.IO) {
+                    ProcessBuilder(*runArgs)
+                        .directory(File(state.dir))
+                        .start()
+                }
                 captureLogs(state, proc)
             } catch (exception: Throwable) {
                 if (state.logsEnabled) {

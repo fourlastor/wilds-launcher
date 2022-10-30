@@ -3,26 +3,17 @@ package io.github.fourlastor.wilds_launcher.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberDialogState
-import io.github.fourlastor.wilds_launcher.downloadLatestRelease
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
-import io.github.fourlastor.wilds_launcher.state.ViewModel
-import java.io.File
 
 @Composable
 fun Launcher(
@@ -80,13 +71,7 @@ fun Launcher(
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
 
-                Button({
-                    val rootDirectory = downloadLatestRelease() ?: return@Button
-                    val gameDirectory = rootDirectory.walk().drop(1).first()
-                    val appDirectory = gameDirectory.absolutePath + File.separator + "app"
-
-                    viewModel.saveWildsDir(appDirectory, FILENAME)
-                }) {
+                Button({ viewModel.manager.update { SettingsState.Downloading } }) {
                     Text(text = "Check for updates")
                 }
 

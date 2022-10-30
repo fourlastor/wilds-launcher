@@ -16,6 +16,7 @@ sealed class SettingsState {
     open fun angleGles20(angleGles20: Boolean) = this
     open fun appendLog(log: String) = this
 
+    object Downloading : SettingsState()
     object Loading : SettingsState()
     object Missing : SettingsState()
     data class Loaded(
