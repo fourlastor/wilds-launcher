@@ -1,5 +1,7 @@
 package io.github.fourlastor.wilds_launcher
 
+import io.github.fourlastor.wilds_launcher.operating_system.OperatingSystem
+import io.github.fourlastor.wilds_launcher.operating_system.getOperatingSystem
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileOutputStream
