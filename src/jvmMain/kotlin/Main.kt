@@ -3,7 +3,6 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.github.fourlastor.wilds_launcher.App
 import io.github.fourlastor.wilds_launcher.AppComponent
-import io.github.fourlastor.wilds_launcher.downloadLatestRelease
 import io.github.fourlastor.wilds_launcher.settings.Dirs
 import io.github.fourlastor.wilds_launcher.settings.SettingsRepository
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
@@ -16,8 +15,6 @@ import java.awt.FileDialog
 const val TITLE = "PokeWilds Launcher"
 
 fun main() {
-    downloadLatestRelease()
-
     val module = module {
         single { AppDirsFactory.getInstance() }
         single { Dirs(get()) }

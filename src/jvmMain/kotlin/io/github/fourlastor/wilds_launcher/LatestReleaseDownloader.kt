@@ -40,12 +40,12 @@ fun getLatestVersion() : String? {
     return version
 }
 
-fun downloadLatestRelease() {
+fun downloadLatestRelease() : File? {
     val latestVersion = getLatestVersion()
 
     if (latestVersion == null) {
         println("Could not get latest version.")
-        return
+        return null
     }
 
     val filenameWithoutExtension = "pokemon-wilds-windows64"
@@ -63,7 +63,7 @@ fun downloadLatestRelease() {
         }
         else {
             println("The latest release is already downloaded.")
-            return
+            return null
         }
     }
 
@@ -90,8 +90,9 @@ fun downloadLatestRelease() {
     println("Unzipping file...")
 
     val destination = filenameWithoutExtension
+    val destinationFile = File(destination)
 
-    File(destination).run {
+    destinationFile.run {
         if (!exists()) {
             mkdirs()
         }
@@ -122,4 +123,6 @@ fun downloadLatestRelease() {
     println("Unzipped file.")
 
     file.delete()
+
+    return destinationFile
 }
