@@ -29,8 +29,8 @@ fun JarPicker(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button({
                 val rootDirectory = downloadLatestRelease() ?: return@Button
-                val gameDirectory = rootDirectory.walk().first()
-                val appDirectory = gameDirectory.path + File.separator + "app"
+                val gameDirectory = rootDirectory.walk().drop(1).first()
+                val appDirectory = gameDirectory.absolutePath + File.separator + "app"
 
                 viewModel.saveWildsDir(appDirectory, FILENAME)
             }) {

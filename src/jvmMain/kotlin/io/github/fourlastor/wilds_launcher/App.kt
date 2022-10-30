@@ -19,6 +19,7 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
         ViewModelContainer(viewModel) { settingsState ->
             when (settingsState) {
                 is SettingsState.Loaded -> Launcher(
+                    viewModel,
                     settingsState = settingsState,
                     onDevModeChanged = {
                         viewModel.devMode(it)
