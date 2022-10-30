@@ -63,36 +63,40 @@ fun Launcher(
                             checked = settingsState.devMode,
                             onCheckedChange = onDevModeChanged,
                         )
-                        Text("Dev mode")
+                        Text("Dev Mode")
                     }
+
+                    Spacer(modifier = Modifier.width(Dp(10f)))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(
                             checked = settingsState.logsEnabled,
                             onCheckedChange = onLogsEnabledChanged,
                         )
-                        Text("Enable logs")
+                        Text("Logs")
                     }
+
+                    Spacer(modifier = Modifier.width(Dp(10f)))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(
                             checked = settingsState.angleGles20,
                             onCheckedChange = onAngleGles20Changed,
                         )
-                        Text("Compatibility mode")
+                        Text("Compatibility Mode")
                     }
                 }
             }
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                 Button({ clearData() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray, contentColor = Color.Red)) {
-                    Text(text = "Clear launcher data")
+                    Text(text = "Clear Launcher Data")
                 }
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
 
                 Button({ viewModel.manager.update { SettingsState.CheckingForUpdates } }) {
-                    Text(text = "Check for updates")
+                    Text(text = "Check for Updates")
                 }
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
