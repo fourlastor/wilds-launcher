@@ -22,6 +22,7 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
     ViewModelContainer(viewModel) { settingsState ->
         when (settingsState) {
             is SettingsState.Loaded -> Launcher(
+                scope = viewModel.scope,
                 directory = File(settingsState.dir),
                 devMode = settingsState.devMode,
                 onDevModeChanged = { devMode -> viewModel.manager.update { it.devMode(devMode) } },
@@ -46,9 +47,9 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                 checkForUpdates = { viewModel.manager.update { SettingsState.CheckingForUpdates } }
             )
 
-            is SettingsState.Downloading -> Downloader(viewModel)
+            is SettingsState.Downloading -> Downloader(viewModel.scope) { dir, jar -> viewModel.saveWildsDir(dir, jar) }
 
-            is SettingsState.CheckingForUpdates -> UpdateChecker(viewModel)
+            is SettingsState.CheckingForUpdates -> UpdateChecker(viewModel.scope) { viewModel.manager.update { SettingsState.UpdateFound } }
             is SettingsState.NoUpdatesFound -> OkDialog(arrayOf("No available update found.")) { viewModel.manager.update { SettingsState.Missing } }
 
             is SettingsState.UpdateFound -> YesNoDialog(
@@ -57,7 +58,11 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                 { viewModel.manager.update { SettingsState.Missing } }
             )
 
-            is SettingsState.Missing -> JarPicker(getPokeWildsLocation, viewModel)
+            is SettingsState.Missing -> JarPicker(
+                { viewModel.manager.update { SettingsState.Downloading } },
+                getPokeWildsLocation,
+                { dir, jar -> viewModel.saveWildsDir(dir, jar) }
+            )
             is SettingsState.Loading -> {}
         }
     }

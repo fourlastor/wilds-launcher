@@ -17,10 +17,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
 import io.github.fourlastor.wilds_launcher.getLatestReleaseChangelog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
 fun Launcher(
+    scope: CoroutineScope,
     directory: File,
     devMode: Boolean,
     onDevModeChanged: (Boolean) -> Unit,
@@ -35,7 +38,9 @@ fun Launcher(
     val scrollState = rememberScrollState()
     val changelog = remember { mutableStateOf("Loading changelog...") }
 
-    changelog.value = getLatestReleaseChangelog() ?: "Failed to load changelog."
+    scope.launch {
+        changelog.value = getLatestReleaseChangelog() ?: "Failed to load changelog."
+    }
 
     Box(
         contentAlignment = Alignment.TopStart,

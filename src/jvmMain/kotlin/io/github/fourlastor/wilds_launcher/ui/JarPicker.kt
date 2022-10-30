@@ -10,32 +10,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import io.github.fourlastor.wilds_launcher.settings.SettingsState
-import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 
 const val FILENAME = "pokewilds.jar"
 const val FILENAME_ALT = "pokemon-wilds.jar"
 
 @Composable
 fun JarPicker(
+    downloadLatestRelease: () -> Unit,
     pickFile: () -> Pair<String, String>?,
-    viewModel: SettingsViewModel
+    saveWildsDir: (String, String) -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Button({ viewModel.manager.update { SettingsState.Downloading } }) {
+            Button(downloadLatestRelease) {
                 Text("Download latest release")
             }
             Text("or")
             Button({
                 pickFile()
                     ?.takeIf { (_, jar) -> jar == FILENAME || jar == FILENAME_ALT }
-                    ?.also { (dir, jar) ->
-                        viewModel.saveWildsDir(dir, jar)
-                    }
+                    ?.also { (dir, jar) -> saveWildsDir(dir, jar) }
             }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)) {
                 Text("Select pokewilds.jar file")
             }

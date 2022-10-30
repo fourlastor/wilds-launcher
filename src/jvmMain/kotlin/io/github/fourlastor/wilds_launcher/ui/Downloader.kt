@@ -11,24 +11,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.fourlastor.wilds_launcher.downloadLatestRelease
-import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
-fun Downloader(viewModel: SettingsViewModel) {
+fun Downloader(scope: CoroutineScope, saveWildsDir: (String, String) -> Unit) {
     val startDownload = remember { mutableStateOf(true) }
     val progress = remember { mutableStateOf(0f) }
 
     if (startDownload.value) {
         startDownload.value = false
 
-        viewModel.scope.launch {
+        scope.launch {
             val rootDirectory = downloadLatestRelease { progress.value = it } ?: return@launch
             val gameDirectory = rootDirectory.walk().drop(1).first()
             val appDirectory = gameDirectory.absolutePath + File.separator + "app"
 
-            viewModel.saveWildsDir(appDirectory, FILENAME)
+            saveWildsDir(appDirectory, FILENAME)
         }
     }
 
