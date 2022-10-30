@@ -20,6 +20,7 @@ import io.github.fourlastor.wilds_launcher.getLatestReleaseChangelog
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 
 @Composable
 fun Launcher(
@@ -52,7 +53,7 @@ fun Launcher(
         modifier = Modifier.fillMaxSize().padding(8.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-            Text("Installed: ${getInstalledReleaseVersion(settingsState)}")
+            Text("Installed: ${getInstalledReleaseVersion(File(settingsState.dir))}")
         }
 
         Column {

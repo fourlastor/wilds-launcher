@@ -1,11 +1,8 @@
 package io.github.fourlastor.wilds_launcher
 
-import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import java.io.File
 
-fun getInstalledReleaseVersion(state: SettingsState.Loaded): String? {
-    val file = File(state.dir)
-
+fun getInstalledReleaseVersion(file: File): String? {
     if (!file.exists()) {
         return null
     }

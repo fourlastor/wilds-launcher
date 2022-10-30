@@ -71,18 +71,6 @@ class SettingsViewModel constructor(
         manager.update { it.wildsDir(dir, jar) }
     }
 
-    fun devMode(devMode: Boolean) {
-        manager.update { it.devMode(devMode) }
-    }
-
-    fun logsEnabled(logsEnabled: Boolean) {
-        manager.update { it.logsEnabled(logsEnabled) }
-    }
-
-    fun angleGles20(angleGles20: Boolean) {
-        manager.update { it.angleGles20(angleGles20) }
-    }
-
     fun clearData() {
         scope.launch {
             repository.clear()
