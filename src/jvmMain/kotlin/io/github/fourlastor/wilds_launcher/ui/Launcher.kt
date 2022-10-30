@@ -8,6 +8,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,6 +19,7 @@ import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
 import io.github.fourlastor.wilds_launcher.getLatestReleaseChangelog
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun Launcher(
@@ -29,6 +32,11 @@ fun Launcher(
     clearData: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val changelog = remember { mutableStateOf("Loading changelog...") }
+
+    viewModel.scope.launch {
+        changelog.value = getLatestReleaseChangelog() ?: "Failed to load changelog."
+    }
 
     Box(
         contentAlignment = Alignment.TopStart,
@@ -36,7 +44,7 @@ fun Launcher(
             .padding(8.dp)
             .verticalScroll(scrollState)
     ) {
-        Text(getLatestReleaseChangelog() ?: "Failed to load changelog.")
+        Text(changelog.value)
     }
 
     Box(
