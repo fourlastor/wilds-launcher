@@ -22,25 +22,28 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
     ViewModelContainer(viewModel) { settingsState ->
         when (settingsState) {
             is SettingsState.Loaded -> Launcher(
-                viewModel,
-                settingsState,
+                directory = File(settingsState.dir),
+                devMode = settingsState.devMode,
                 onDevModeChanged = { devMode -> viewModel.manager.update { it.devMode(devMode) } },
+                logsEnabled = settingsState.logsEnabled,
                 onLogsEnabledChanged = { logsEnabled -> viewModel.manager.update { it.logsEnabled(logsEnabled) } },
+                angleGles20 = settingsState.angleGles20,
                 onAngleGles20Changed = { angleGles20 -> viewModel.manager.update { it.angleGles20(angleGles20) } },
-                runPokeWilds = { state ->
+                runPokeWilds = {
                     val context = newSingleThreadContext("pokeWildsJar")
 
                     viewModel.scope.launch(context) {
                         var log: ((String) -> Unit)? = null
 
-                        if (state.logsEnabled) {
-                            log = { state.appendLog(it) }
+                        if (settingsState.logsEnabled) {
+                            log = { settingsState.appendLog(it) }
                         }
 
-                        runPokeWilds(File(state.dir, state.jar), state.angleGles20, state.devMode, log)
+                        runPokeWilds(File(settingsState.dir, settingsState.jar), settingsState.angleGles20, settingsState.devMode, log)
                     }
                 },
-                clearData = { viewModel.clearData() }
+                clearData = { viewModel.clearData() },
+                checkForUpdates = { viewModel.manager.update { SettingsState.CheckingForUpdates } }
             )
 
             is SettingsState.Downloading -> Downloader(viewModel)

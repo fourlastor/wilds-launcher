@@ -17,27 +17,25 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
 import io.github.fourlastor.wilds_launcher.getLatestReleaseChangelog
-import io.github.fourlastor.wilds_launcher.settings.SettingsState
-import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
-import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
 fun Launcher(
-    viewModel: SettingsViewModel,
-    settingsState: SettingsState.Loaded,
+    directory: File,
+    devMode: Boolean,
     onDevModeChanged: (Boolean) -> Unit,
+    logsEnabled: Boolean,
     onLogsEnabledChanged: (Boolean) -> Unit,
+    angleGles20: Boolean,
     onAngleGles20Changed: (Boolean) -> Unit,
-    runPokeWilds: (SettingsState.Loaded) -> Unit,
+    runPokeWilds: () -> Unit,
     clearData: () -> Unit,
+    checkForUpdates: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val changelog = remember { mutableStateOf("Loading changelog...") }
 
-    viewModel.scope.launch {
-        changelog.value = getLatestReleaseChangelog() ?: "Failed to load changelog."
-    }
+    changelog.value = getLatestReleaseChangelog() ?: "Failed to load changelog."
 
     Box(
         contentAlignment = Alignment.TopStart,
@@ -53,7 +51,7 @@ fun Launcher(
         modifier = Modifier.fillMaxSize().padding(8.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-            Text("Installed: ${getInstalledReleaseVersion(File(settingsState.dir))}")
+            Text("Installed: ${getInstalledReleaseVersion(directory)}")
         }
 
         Column {
@@ -61,7 +59,7 @@ fun Launcher(
                 Row {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(
-                            checked = settingsState.devMode,
+                            checked = devMode,
                             onCheckedChange = onDevModeChanged,
                         )
                         Text("Dev Mode")
@@ -71,7 +69,7 @@ fun Launcher(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(
-                            checked = settingsState.logsEnabled,
+                            checked = logsEnabled,
                             onCheckedChange = onLogsEnabledChanged,
                         )
                         Text("Logs")
@@ -81,7 +79,7 @@ fun Launcher(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(
-                            checked = settingsState.angleGles20,
+                            checked = angleGles20,
                             onCheckedChange = onAngleGles20Changed,
                         )
                         Text("Compatibility Mode")
@@ -96,13 +94,13 @@ fun Launcher(
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
 
-                Button({ viewModel.manager.update { SettingsState.CheckingForUpdates } }) {
+                Button(checkForUpdates) {
                     Text(text = "Check for Updates")
                 }
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
 
-                Button({ runPokeWilds(settingsState) }) {
+                Button(runPokeWilds) {
                     Text("Start PokeWilds")
                 }
             }
