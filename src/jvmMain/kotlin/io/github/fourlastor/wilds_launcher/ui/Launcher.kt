@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
+import io.github.fourlastor.wilds_launcher.getLatestReleaseVersion
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 
@@ -71,7 +73,16 @@ fun Launcher(
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
 
-                Button({ viewModel.manager.update { SettingsState.Downloading } }) {
+                Button({
+                    val installedReleaseVersion = getInstalledReleaseVersion(settingsState)
+                    val latestReleaseVersion = getLatestReleaseVersion() ?: return@Button
+
+                    if (installedReleaseVersion != null && installedReleaseVersion >= latestReleaseVersion) {
+                        return@Button
+                    }
+
+                    viewModel.manager.update { SettingsState.Downloading }
+                }) {
                     Text(text = "Check for updates")
                 }
 
