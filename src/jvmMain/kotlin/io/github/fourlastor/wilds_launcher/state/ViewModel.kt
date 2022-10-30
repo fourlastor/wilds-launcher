@@ -9,7 +9,5 @@ interface ViewModel<State> {
 
     fun stop()
 
-    fun runPokeWilds(state: SettingsState.Loaded)
-
     val state: StateFlow<State>
 }

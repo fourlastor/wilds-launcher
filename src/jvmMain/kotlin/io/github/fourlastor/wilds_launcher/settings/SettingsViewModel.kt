@@ -89,45 +89,7 @@ class SettingsViewModel constructor(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    override fun runPokeWilds(state: SettingsState.Loaded) {
-        val jarFile = File(File(state.dir), state.jar)
-        val runArgs = mutableListOf("java", "-jar", jarFile.absolutePath).apply {
-            if (state.angleGles20) {
-                add("angle_gles20")
-            }
-            if (state.devMode) {
-                add("dev")
-            }
-        }.toTypedArray()
-
-        scope.launch(newSingleThreadContext("pokeWildsJar")) {
-            try {
-                if (state.logsEnabled) {
-                    appendLog("Running ${runArgs.joinToString(" ")}")
-                }
-                val proc = withContext(Dispatchers.IO) {
-                    ProcessBuilder(*runArgs)
-                        .directory(File(state.dir))
-                        .start()
-                }
-                captureLogs(state, proc)
-            } catch (exception: Throwable) {
-                if (state.logsEnabled) {
-                    appendLog(exception.fullTrace())
-                }
-            }
-
-        }
-    }
-
-    private fun Throwable.fullTrace(): String = """
-        $message
-        ${stackTraceToString()}
-        ${cause?.also { "Caused by: ${it.fullTrace()}" }}
-    """.trimIndent()
-
-    private fun captureLogs(state: SettingsState.Loaded, proc: Process) {
+    fun captureLogs(state: SettingsState.Loaded, proc: Process) {
         if (state.logsEnabled) {
             val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
 
@@ -144,7 +106,7 @@ class SettingsViewModel constructor(
         }
     }
 
-    private fun appendLog(log: String) {
+    fun appendLog(log: String) {
         println(log)
         manager.update { it.appendLog(log) }
     }

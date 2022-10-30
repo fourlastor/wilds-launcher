@@ -30,7 +30,7 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                         viewModel.angleGles20(it)
                     },
                     runPokeWilds = {
-                        viewModel.runPokeWilds(it)
+                        runPokeWilds(viewModel, it)
                     },
                     clearData = {
                         viewModel.clearData()
