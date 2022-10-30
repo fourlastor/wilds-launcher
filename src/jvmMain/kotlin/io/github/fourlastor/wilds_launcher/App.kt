@@ -6,9 +6,14 @@ import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 import io.github.fourlastor.wilds_launcher.state.ViewModelContainer
 import io.github.fourlastor.wilds_launcher.ui.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.File
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 @Preview
 fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, String>?) {
@@ -29,11 +34,16 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                     viewModel.angleGles20(it)
                 },
                 runPokeWilds = { state ->
-                    if (state.logsEnabled) {
-                        runPokeWilds(viewModel, state) { state.appendLog(it) }
-                    }
-                    else {
-                        runPokeWilds(viewModel, state)
+                    val context = newSingleThreadContext("pokeWildsJar")
+
+                    viewModel.scope.launch(context) {
+                        var log: ((String) -> Unit)? = null
+
+                        if (state.logsEnabled) {
+                            log = { state.appendLog(it) }
+                        }
+
+                        runPokeWilds(File(state.dir, state.jar), state.angleGles20, state.devMode, log)
                     }
                 },
                 clearData = {
