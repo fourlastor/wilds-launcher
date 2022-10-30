@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
+import io.github.fourlastor.wilds_launcher.getLatestReleaseChangelog
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 
@@ -29,18 +30,23 @@ fun Launcher(
     val scrollState = rememberScrollState()
 
     Box(
-        contentAlignment = Alignment.BottomEnd,
+        contentAlignment = Alignment.TopStart,
         modifier = Modifier.fillMaxSize()
             .padding(8.dp)
             .verticalScroll(scrollState)
+    ) {
+        Text(getLatestReleaseChangelog() ?: "Failed to load changelog.")
+    }
+
+    Box(
+        contentAlignment = Alignment.BottomEnd,
+        modifier = Modifier.fillMaxSize().padding(8.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
             Text("Installed: ${getInstalledReleaseVersion(settingsState)}")
         }
 
         Column {
-            Text(settingsState.logs)
-
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
                 Row {
                     Row(verticalAlignment = Alignment.CenterVertically) {

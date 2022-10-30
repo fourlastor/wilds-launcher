@@ -28,3 +28,26 @@ fun getLatestReleaseVersion() : String? {
 
     return version
 }
+
+fun getLatestReleaseChangelog() : String? {
+    val url = URL("https://api.github.com/repos/SheerSt/pokewilds/releases/latest")
+    val connection = url.openConnection() as HttpURLConnection
+
+    connection.requestMethod = "GET"
+    connection.setRequestProperty("accept", "application/vnd.github+json")
+
+    connection.connectTimeout = 5000
+    connection.readTimeout = 5000
+
+    if (connection.responseCode >= 300) {
+        return null
+    }
+
+    val response = connection.inputStream.bufferedReader().use { it.readText() }
+    val jsonObject = Json.parseToJsonElement(response) as JsonObject
+
+    val jsonPrimitive = jsonObject["body"] as JsonPrimitive
+    val version = jsonPrimitive.content
+
+    return version
+}
