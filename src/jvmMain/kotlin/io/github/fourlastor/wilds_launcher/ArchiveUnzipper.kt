@@ -5,6 +5,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.ZipFile
 
+const val BUFFER_SIZE = 4096
+
 fun unzipArchive(archive: File, destination: File, deleteArchiveAfterwards: Boolean = true) {
     destination.run {
         if (!exists()) {

@@ -13,7 +13,6 @@ const val OWNER = "SheerSt"
 const val REPOSITORY = "pokewilds"
 
 const val READ_SIZE_IN_BYTES = 1024
-const val BUFFER_SIZE = 4096
 
 fun getLatestVersion() : String? {
     val url = URL("https://api.github.com/repos/$OWNER/$REPOSITORY/releases/latest")
