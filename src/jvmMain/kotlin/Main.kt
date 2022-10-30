@@ -34,7 +34,7 @@ fun main() {
 }
 
 
-private fun FrameWindowScope.pickFile(): Pair<String, String>? {
+fun FrameWindowScope.pickFile(): Pair<String, String>? {
     FileDialog(window).apply {
         isVisible = true
         val file = file ?: return@apply

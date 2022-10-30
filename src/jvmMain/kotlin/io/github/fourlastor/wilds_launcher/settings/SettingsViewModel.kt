@@ -20,18 +20,27 @@ class SettingsViewModel constructor(
     override fun start() {
         scope.launch {
             val data = repository.read()
+
             if (data != null) {
-                manager.update {
-                    SettingsState.Loaded(
-                        dir = data.dir,
-                        jar = data.jar,
-                        devMode = data.devMode,
-                        logsEnabled = data.logsEnabled,
-                        angleGles20 = data.angleGles20,
-                        logs = ""
-                    )
+                val jarFile = File(File(data.dir), data.jar)
+
+                if (jarFile.exists()) {
+                    manager.update {
+                        SettingsState.Loaded(
+                            dir = data.dir,
+                            jar = data.jar,
+                            devMode = data.devMode,
+                            logsEnabled = data.logsEnabled,
+                            angleGles20 = data.angleGles20,
+                            logs = ""
+                        )
+                    }
                 }
-            } else {
+                else {
+                    manager.update { SettingsState.Missing }
+                }
+            }
+            else {
                 manager.update { SettingsState.Missing }
             }
 
