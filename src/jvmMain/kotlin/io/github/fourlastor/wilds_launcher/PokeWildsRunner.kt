@@ -1,5 +1,7 @@
 package io.github.fourlastor.wilds_launcher
 
+import io.github.fourlastor.wilds_launcher.extensions.capture
+import io.github.fourlastor.wilds_launcher.extensions.fullTrace
 import io.github.fourlastor.wilds_launcher.settings.SettingsState
 import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
 import kotlinx.coroutines.*

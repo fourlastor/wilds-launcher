@@ -1,4 +1,4 @@
-package io.github.fourlastor.wilds_launcher
+package io.github.fourlastor.wilds_launcher.extensions
 
 import java.io.InputStream
 import java.io.InputStreamReader
