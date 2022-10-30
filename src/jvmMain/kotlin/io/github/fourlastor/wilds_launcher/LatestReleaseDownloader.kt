@@ -4,12 +4,10 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.BufferedInputStream
-import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.zip.ZipFile
 
 const val OWNER = "SheerSt"
 const val REPOSITORY = "pokewilds"
@@ -90,42 +88,12 @@ fun downloadLatestRelease() : File? {
 
     println("Finished download of latest release.")
 
-    println("Unzipping file...")
+    println("Unzipping archive...")
 
-    val destination = filenameWithoutExtension
-    val destinationFile = File(destination)
+    val destination = File(filenameWithoutExtension)
+    unzipArchive(file, destination)
 
-    destinationFile.run {
-        if (!exists()) {
-            mkdirs()
-        }
-    }
+    println("Unzipped archive.")
 
-    ZipFile(file).use { zipFile ->
-        zipFile.entries().asSequence().forEach { entry ->
-            zipFile.getInputStream(entry).use { inputStream ->
-                val path = destination + File.separator + entry.name
-
-                if (entry.isDirectory) {
-                    File(path).mkdir()
-                }
-                else {
-                    BufferedOutputStream(FileOutputStream(path)).use { outputStream ->
-                        val bytes = ByteArray(BUFFER_SIZE)
-                        var readBytes: Int
-
-                        while (inputStream.read(bytes).also { readBytes = it } != -1) {
-                            outputStream.write(bytes, 0, readBytes)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    println("Unzipped file.")
-
-    file.delete()
-
-    return destinationFile
+    return destination
 }
