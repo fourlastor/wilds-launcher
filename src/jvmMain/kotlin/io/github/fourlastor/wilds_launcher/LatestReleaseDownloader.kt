@@ -9,10 +9,13 @@ import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
+const val OWNER = "SheerSt"
+const val REPOSITORY = "pokewilds"
+
 const val READ_SIZE_IN_BYTES = 1024
 
 fun getLatestVersion() : String? {
-    val url = URL("https://api.github.com/repos/SheerSt/pokewilds/releases/latest")
+    val url = URL("https://api.github.com/repos/$OWNER/$REPOSITORY/releases/latest")
     val connection = url.openConnection() as HttpURLConnection
 
     connection.requestMethod = "GET"
@@ -43,7 +46,7 @@ fun downloadLatestRelease() {
     }
 
     val filename = "pokemon-wilds-windows64.zip"
-    val url = URL("https://github.com/SheerSt/pokewilds/releases/download/$latestVersion/$filename")
+    val url = URL("https://github.com/$OWNER/$REPOSITORY/releases/download/$latestVersion/$filename")
     val connection = url.openConnection()
     val totalBytesToDownload = connection.contentLength
 
