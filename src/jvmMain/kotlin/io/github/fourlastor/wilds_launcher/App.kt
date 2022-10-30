@@ -40,29 +40,47 @@ fun App(appComponent: AppComponent, getPokeWildsLocation: () -> Pair<String, Str
                             log = { settingsState.appendLog(it) }
                         }
 
-                        runPokeWilds(File(settingsState.dir, settingsState.jar), settingsState.angleGles20, settingsState.devMode, log)
+                        runPokeWilds(
+                            File(settingsState.dir, settingsState.jar),
+                            settingsState.angleGles20,
+                            settingsState.devMode,
+                            log
+                        )
                     }
                 },
-                clearData = { viewModel.clearData() },
+                clearData = {
+                    viewModel.scope.launch {
+                        viewModel.repository.clear()
+                        viewModel.manager.update { SettingsState.Missing }
+                    }
+                },
                 checkForUpdates = { viewModel.manager.update { SettingsState.CheckingForUpdates } }
             )
 
-            is SettingsState.Downloading -> Downloader(viewModel.scope) { dir, jar -> viewModel.saveWildsDir(dir, jar) }
+            is SettingsState.Downloading -> Downloader(viewModel.scope) { dir, jar ->
+                viewModel.manager.update { it.wildsDir(dir, jar) }
+            }
 
-            is SettingsState.CheckingForUpdates -> UpdateChecker(viewModel.scope) { viewModel.manager.update { SettingsState.UpdateFound } }
-            is SettingsState.NoUpdatesFound -> OkDialog(arrayOf("No available update found.")) { viewModel.manager.update { SettingsState.Missing } }
+            is SettingsState.CheckingForUpdates -> UpdateChecker(viewModel.scope) {
+                viewModel.manager.update { SettingsState.UpdateFound }
+            }
+
+            is SettingsState.NoUpdatesFound -> OkDialog(arrayOf("No available update found.")) {
+                viewModel.manager.update { SettingsState.Missing }
+            }
 
             is SettingsState.UpdateFound -> YesNoDialog(
-                arrayOf("There is an update available (${getLatestReleaseVersion()}).", "Do you want to download it?"),
-                { viewModel.manager.update { SettingsState.Downloading } },
-                { viewModel.manager.update { SettingsState.Missing } }
+                lines = arrayOf("There is an update available (${getLatestReleaseVersion()}).", "Do you want to download it?"),
+                onYes = { viewModel.manager.update { SettingsState.Downloading } },
+                onNo = { viewModel.manager.update { SettingsState.Missing } }
             )
 
             is SettingsState.Missing -> JarPicker(
-                { viewModel.manager.update { SettingsState.Downloading } },
-                getPokeWildsLocation,
-                { dir, jar -> viewModel.saveWildsDir(dir, jar) }
+                downloadLatestRelease = { viewModel.manager.update { SettingsState.Downloading } },
+                pickFile = getPokeWildsLocation,
+                saveWildsDir = { dir, jar ->viewModel.manager.update { it.wildsDir(dir, jar) } }
             )
+
             is SettingsState.Loading -> {}
         }
     }

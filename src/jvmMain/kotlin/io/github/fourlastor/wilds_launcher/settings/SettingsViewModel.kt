@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class SettingsViewModel constructor(
-    private val repository: SettingsRepository,
+    val repository: SettingsRepository,
     dispatchers: Dispatchers,
 ) : ViewModel<SettingsState> {
     val scope = CoroutineScope(dispatchers.Default)
@@ -66,15 +66,4 @@ class SettingsViewModel constructor(
     }
 
     override val state = manager.state
-
-    fun saveWildsDir(dir: String, jar: String) {
-        manager.update { it.wildsDir(dir, jar) }
-    }
-
-    fun clearData() {
-        scope.launch {
-            repository.clear()
-            manager.update { SettingsState.Missing }
-        }
-    }
 }
