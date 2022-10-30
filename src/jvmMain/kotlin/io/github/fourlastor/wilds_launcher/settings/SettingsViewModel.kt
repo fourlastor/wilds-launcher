@@ -6,8 +6,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import java.io.BufferedReader
 import java.io.File
+import java.io.InputStream
 import java.io.InputStreamReader
 
 class SettingsViewModel constructor(
@@ -89,25 +89,17 @@ class SettingsViewModel constructor(
         }
     }
 
-    fun captureLogs(state: SettingsState.Loaded, proc: Process) {
-        if (state.logsEnabled) {
-            val stdInput = BufferedReader(InputStreamReader(proc.inputStream))
+    fun captureLogs(state: SettingsState.Loaded, stream: InputStream) {
+        val reader = InputStreamReader(stream).buffered()
+        var line = ""
 
-            val stdError = BufferedReader(InputStreamReader(proc.errorStream))
-
-            var s = ""
-            while (stdInput.readLine()?.also { s = it } != null) {
-                appendLog(s)
-            }
-
-            while (stdError.readLine()?.also { s = it } != null) {
-                appendLog(s)
-            }
+        while (reader.readLine()?.also { line = it } != null) {
+            appendLog(state, line)
         }
     }
 
-    fun appendLog(log: String) {
+    fun appendLog(state: SettingsState.Loaded, log: String) {
         println(log)
-        manager.update { it.appendLog(log) }
+        state.appendLog(log)
     }
 }

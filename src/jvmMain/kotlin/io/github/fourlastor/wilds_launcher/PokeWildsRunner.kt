@@ -20,17 +20,21 @@ fun runPokeWilds(viewModel : SettingsViewModel, state: SettingsState.Loaded) {
     viewModel.scope.launch(newSingleThreadContext("pokeWildsJar")) {
         try {
             if (state.logsEnabled) {
-                viewModel.appendLog("Running ${runArgs.joinToString(" ")}")
+                viewModel.appendLog(state, "Running ${runArgs.joinToString(" ")}")
             }
             val proc = withContext(Dispatchers.IO) {
                 ProcessBuilder(*runArgs)
                     .directory(File(state.dir))
                     .start()
             }
-            viewModel.captureLogs(state, proc)
+
+            if (state.logsEnabled) {
+                viewModel.captureLogs(state, proc.inputStream)
+                viewModel.captureLogs(state, proc.errorStream)
+            }
         } catch (exception: Throwable) {
             if (state.logsEnabled) {
-                viewModel.appendLog(exception.fullTrace())
+                viewModel.appendLog(state, exception.fullTrace())
             }
         }
     }
