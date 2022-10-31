@@ -1,7 +1,7 @@
 package io.github.fourlastor.wilds_launcher
 
-import io.github.fourlastor.wilds_launcher.releases.ReleaseService
-import io.github.fourlastor.wilds_launcher.settings.SettingsService
+import io.github.fourlastor.wilds_launcher.releases.services.ReleaseService
+import io.github.fourlastor.wilds_launcher.settings.services.SettingsService
 import kotlinx.coroutines.CoroutineScope
 
 data class Context(

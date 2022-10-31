@@ -2,9 +2,10 @@ import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.github.fourlastor.wilds_launcher.Context
-import io.github.fourlastor.wilds_launcher.releases.GitHubReleaseService
-import io.github.fourlastor.wilds_launcher.releases.ReleaseService
-import io.github.fourlastor.wilds_launcher.settings.*
+import io.github.fourlastor.wilds_launcher.releases.services.GitHubReleaseService
+import io.github.fourlastor.wilds_launcher.releases.services.ReleaseService
+import io.github.fourlastor.wilds_launcher.settings.services.FileSettingsService
+import io.github.fourlastor.wilds_launcher.settings.services.SettingsService
 import io.github.fourlastor.wilds_launcher.ui.StateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

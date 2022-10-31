@@ -1,5 +1,6 @@
-package io.github.fourlastor.wilds_launcher.settings
+package io.github.fourlastor.wilds_launcher.settings.services
 
+import io.github.fourlastor.wilds_launcher.settings.Settings
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

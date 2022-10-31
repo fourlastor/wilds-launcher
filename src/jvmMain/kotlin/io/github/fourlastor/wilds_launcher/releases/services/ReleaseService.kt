@@ -1,4 +1,4 @@
-package io.github.fourlastor.wilds_launcher.releases
+package io.github.fourlastor.wilds_launcher.releases.services
 
 import java.io.File
 

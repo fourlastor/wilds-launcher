@@ -1,4 +1,4 @@
-package io.github.fourlastor.wilds_launcher.releases
+package io.github.fourlastor.wilds_launcher.releases.services
 
 import io.github.fourlastor.wilds_launcher.operating_system.OperatingSystem
 import io.github.fourlastor.wilds_launcher.operating_system.getOperatingSystem

@@ -1,4 +1,4 @@
-package io.github.fourlastor.wilds_launcher.settings
+package io.github.fourlastor.wilds_launcher.settings.services
 
 interface SettingsService {
     fun load()
