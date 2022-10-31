@@ -22,19 +22,20 @@ fun main() {
     val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     val appDirs = AppDirsFactory.getInstance()
-    val config = appDirs.getUserConfigDir(
+    val configDirectory = appDirs.getUserConfigDir(
         "wilds-launcher",
         "1.0.0",
         "io.github.fourlastor"
     )
-    val configFile = File(config, "config.json")
+    val settingsFile = File(configDirectory, "settings.json")
 
-    val settingsService: SettingsService = FileSettingsService(configFile)
+    val settingsService: SettingsService = FileSettingsService(settingsFile)
     settingsService.load()
 
     val releaseService: ReleaseService = GitHubReleaseService()
 
-    val logger: Logger = FileLogger(File("logs.log"))
+    val logFile = File("logs.log")
+    val logger: Logger = FileLogger(logFile)
 
     val context = Context(coroutineScope, settingsService, releaseService, logger)
 
