@@ -1,7 +1,5 @@
 package io.github.fourlastor.wilds_launcher.releases.services
 
-import io.github.fourlastor.wilds_launcher.operating_system.OperatingSystem
-import io.github.fourlastor.wilds_launcher.operating_system.getOperatingSystem
 import io.github.fourlastor.wilds_launcher.ui.FILENAME
 import io.github.fourlastor.wilds_launcher.ui.FILENAME_ALT
 import io.github.fourlastor.wilds_launcher.unzipArchive
@@ -114,13 +112,8 @@ class GitHubReleaseService(
     }
 
     private fun getFilenameWithoutExtension() : String {
-        val filenameWithoutExtension = "pokewilds-"
-
-        return when (getOperatingSystem()) {
-            OperatingSystem.Windows -> filenameWithoutExtension + "windows64"
-            OperatingSystem.Linux -> filenameWithoutExtension + "linux64"
-            else -> filenameWithoutExtension + "otherplatforms"
-        }
+        // Always download "otherplatforms" because we only care about the .jar and "otherplatforms" is the smallest.
+        return "pokewilds-otherplatforms"
     }
 
     private fun getFilename() : String {
