@@ -3,6 +3,8 @@ package io.github.fourlastor.wilds_launcher.releases.services
 import java.io.File
 
 interface ReleaseService {
+    fun findInstallation() : File?
+
     fun getLatestReleaseVersion() : String?
     fun getLatestReleaseChangelog() : String?
     fun getLatestReleaseSizeInBytes() : Long?

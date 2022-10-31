@@ -18,21 +18,28 @@ import java.io.File
 
 const val TITLE = "PokeWilds Launcher"
 
+const val APP_NAME = "wilds-launcher"
+const val APP_VERSION = "1.0.0"
+const val APP_AUTHOR = "io.github.fourlastor"
+
 fun main() {
     val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     val appDirs = AppDirsFactory.getInstance()
-    val configDirectory = appDirs.getUserConfigDir(
-        "wilds-launcher",
-        "1.0.0",
-        "io.github.fourlastor"
-    )
+
+    val configDirectory = appDirs.getUserConfigDir(APP_NAME, APP_VERSION, APP_AUTHOR)
+    val dataDirectory = appDirs.getUserDataDir(APP_NAME, APP_VERSION, APP_AUTHOR)
+
+    println(configDirectory)
+    println(dataDirectory)
+
     val settingsFile = File(configDirectory, "settings.json")
 
     val settingsService: SettingsService = FileSettingsService(settingsFile)
     settingsService.load()
 
-    val releaseService: ReleaseService = GitHubReleaseService()
+    val installDirectory = File(dataDirectory)
+    val releaseService: ReleaseService = GitHubReleaseService(installDirectory)
 
     val logFile = File("logs.log")
     val logger: Logger = FileLogger(logFile)

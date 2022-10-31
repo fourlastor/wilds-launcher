@@ -8,12 +8,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun OkDialog(lines: Array<String>, onOk: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            lines.forEach { Text(it) }
+            lines.forEach { Text(it, textAlign = TextAlign.Center) }
             Button(onOk) { Text("Ok") }
         }
     }

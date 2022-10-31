@@ -6,7 +6,6 @@ import io.github.fourlastor.wilds_launcher.Context
 import io.github.fourlastor.wilds_launcher.states.*
 import io.github.fourlastor.wilds_launcher.states.State
 import java.io.File
-import java.nio.file.Paths
 
 @Composable
 @Preview
@@ -45,11 +44,7 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                     state = OkDialogState(arrayOf("Failed to download latest release.")) { state = JarPickerState() }
                 } },
                 findJar = {
-                    val workingDirectory = File(Paths.get("").toAbsolutePath().toString())
-                    val jarFile = workingDirectory.walkTopDown()
-                        .filter { it.isFile }
-                        .filter { it.name == FILENAME || it.name == FILENAME_ALT }
-                        .firstOrNull()
+                    val jarFile = context.releaseService.findInstallation()
 
                     if (jarFile == null) {
                         state = OkDialogState(arrayOf("Could not find pokewilds.jar.")) { state = JarPickerState() }
