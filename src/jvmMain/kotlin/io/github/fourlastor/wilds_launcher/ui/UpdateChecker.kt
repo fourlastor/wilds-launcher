@@ -7,14 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.fourlastor.wilds_launcher.Context
+import io.github.fourlastor.wilds_launcher.releases.getInstalledReleaseSizeInBytes
 import io.github.fourlastor.wilds_launcher.releases.getInstalledReleaseVersion
 import kotlinx.coroutines.launch
-import java.io.File
 
 @Composable
 fun UpdateChecker(context: Context, onUpdateFound: () -> Unit, onNoUpdateFound: () -> Unit, onError: () -> Unit) {
     context.coroutineScope.launch {
-        val installedReleaseVersion = getInstalledReleaseVersion(File(context.settingsService.getDir()))
         val latestReleaseVersion = context.releaseService.getLatestReleaseVersion()
 
         if (latestReleaseVersion == null) {
@@ -22,9 +21,25 @@ fun UpdateChecker(context: Context, onUpdateFound: () -> Unit, onNoUpdateFound: 
             return@launch
         }
 
+        val installedReleaseVersion = context.getInstalledReleaseVersion()
+
         if (installedReleaseVersion != null && installedReleaseVersion >= latestReleaseVersion) {
-            onNoUpdateFound()
-            return@launch
+            val installedReleaseSizeInBytes = context.getInstalledReleaseSizeInBytes()
+
+            if (installedReleaseSizeInBytes != null) {
+                val latestReleaseSizeInBytes = context.releaseService.getLatestReleaseSizeInBytes()
+
+                if (latestReleaseSizeInBytes == null) {
+                    onError()
+                    return@launch
+                }
+
+                // We might have mods installed, which increases our installed release file size.
+                if (installedReleaseSizeInBytes >= latestReleaseSizeInBytes) {
+                    onNoUpdateFound()
+                    return@launch
+                }
+            }
         }
 
         onUpdateFound()

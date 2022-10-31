@@ -18,12 +18,10 @@ import androidx.compose.ui.unit.dp
 import io.github.fourlastor.wilds_launcher.Context
 import io.github.fourlastor.wilds_launcher.releases.getInstalledReleaseVersion
 import kotlinx.coroutines.launch
-import java.io.File
 
 @Composable
 fun Launcher(
     context: Context,
-    directory: File,
     devMode: Boolean,
     onDevModeChanged: (Boolean) -> Unit,
     logsEnabled: Boolean,
@@ -55,7 +53,7 @@ fun Launcher(
         modifier = Modifier.fillMaxSize().padding(8.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-            Text("Installed: ${getInstalledReleaseVersion(directory)}")
+            Text("Installed: ${context.getInstalledReleaseVersion()}")
         }
 
         Column {

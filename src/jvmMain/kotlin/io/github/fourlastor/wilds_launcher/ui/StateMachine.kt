@@ -62,7 +62,6 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
         is LauncherState -> {
             Launcher(
                 context = context,
-                directory = File(context.settingsService.getDir()),
                 devMode = devMode,
                 onDevModeChanged = {
                     context.settingsService.setDevMode(it)

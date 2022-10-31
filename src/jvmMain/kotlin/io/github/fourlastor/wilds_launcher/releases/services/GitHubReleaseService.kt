@@ -23,6 +23,13 @@ class GitHubReleaseService : ReleaseService {
         return getLatestReleaseProperty("body")
     }
 
+    override fun getLatestReleaseSizeInBytes(): Long? {
+        val version = getLatestReleaseVersion() ?: return null
+        val connection = getURL(version).openConnection()
+
+        return connection.contentLength.toLong()
+    }
+
     override fun downloadLatestRelease(onProgressChanged: (Float) -> Unit) : File? {
         val version = getLatestReleaseVersion()
 
@@ -31,13 +38,10 @@ class GitHubReleaseService : ReleaseService {
             return null
         }
 
-        val filenameWithoutExtension = getFilenameWithoutExtension()
-        val filename = "$filenameWithoutExtension.zip"
-
-        val url = URL("https://github.com/SheerSt/pokewilds/releases/download/$version/$filename")
-        val connection = url.openConnection()
+        val connection = getURL(version).openConnection()
         val totalBytesToDownload = connection.contentLength
 
+        val filename = getFilename()
         val file = File(filename)
 
         println("Starting download of latest release.")
@@ -65,7 +69,9 @@ class GitHubReleaseService : ReleaseService {
 
         println("Unzipping archive...")
 
+        val filenameWithoutExtension = getFilenameWithoutExtension()
         val destination = File(filenameWithoutExtension)
+
         unzipArchive(file, destination)
 
         println("Unzipped archive.")
@@ -104,5 +110,13 @@ class GitHubReleaseService : ReleaseService {
             OperatingSystem.Linux -> filenameWithoutExtension + "linux64"
             else -> filenameWithoutExtension + "otherplatforms"
         }
+    }
+
+    private fun getFilename() : String {
+        return "${getFilenameWithoutExtension()}.zip"
+    }
+
+    private fun getURL(version: String) : URL {
+        return URL("https://github.com/SheerSt/pokewilds/releases/download/$version/${getFilename()}")
     }
 }

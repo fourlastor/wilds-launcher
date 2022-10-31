@@ -1,8 +1,11 @@
 package io.github.fourlastor.wilds_launcher.releases
 
+import io.github.fourlastor.wilds_launcher.Context
 import java.io.File
 
-fun getInstalledReleaseVersion(file: File): String? {
+fun Context.getInstalledReleaseVersion(): String? {
+    val file = File(this.settingsService.getDir())
+
     if (!file.exists()) {
         return null
     }
