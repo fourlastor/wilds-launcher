@@ -29,7 +29,7 @@ fun Launcher(
     angleGles20: Boolean,
     onAngleGles20Changed: (Boolean) -> Unit,
     runPokeWilds: () -> Unit,
-    clearData: () -> Unit,
+    clearSettings: () -> Unit,
     checkForUpdates: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -90,8 +90,8 @@ fun Launcher(
             }
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                Button({ clearData() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray, contentColor = Color.Red)) {
-                    Text(text = "Clear Launcher Data")
+                Button({ clearSettings() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray, contentColor = Color.Red)) {
+                    Text(text = "Clear Settings")
                 }
 
                 Spacer(modifier = Modifier.width(Dp(10f)))

@@ -95,7 +95,7 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                         )
                     }
                 },
-                clearData = {
+                clearSettings = {
                     context.settingsService.clear()
                     state = JarPickerState()
                 },
