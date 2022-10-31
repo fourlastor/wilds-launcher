@@ -15,11 +15,7 @@ import java.io.File
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
 @Preview
-fun StateMachine(
-    context: Context,
-    getPokeWildsLocation: () -> Pair<String, String>?,
-    log: (String) -> Unit,
-) {
+fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, String>?) {
     var state: State by remember { mutableStateOf(InitialState()) }
 
     if (state is InitialState) {
@@ -89,7 +85,7 @@ fun StateMachine(
                         var log: ((String) -> Unit)? = null
 
                         if (context.settingsService.getLogsEnabled()) {
-                            log = { log(it) }
+                            log = { context.logger.log(it) }
                         }
 
                         runPokeWilds(

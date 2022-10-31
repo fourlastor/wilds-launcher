@@ -2,6 +2,8 @@ import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.github.fourlastor.wilds_launcher.Context
+import io.github.fourlastor.wilds_launcher.logs.FileLogger
+import io.github.fourlastor.wilds_launcher.logs.Logger
 import io.github.fourlastor.wilds_launcher.releases.services.GitHubReleaseService
 import io.github.fourlastor.wilds_launcher.releases.services.ReleaseService
 import io.github.fourlastor.wilds_launcher.settings.services.FileSettingsService
@@ -32,29 +34,17 @@ fun main() {
 
     val releaseService: ReleaseService = GitHubReleaseService()
 
-    val context = Context(coroutineScope, settingsService, releaseService)
+    val logger: Logger = FileLogger(File("logs.log"))
 
-    var logs = ""
+    val context = Context(coroutineScope, settingsService, releaseService, logger)
 
     application {
         Window(title = TITLE, onCloseRequest = {
             coroutineScope.cancel()
-
-            if (logs.isNotBlank()) {
-                File("logs.log").writeText(logs)
-            }
+            logger.shutdown()
 
             exitApplication()
-        }) {
-            StateMachine(
-                context = context,
-                getPokeWildsLocation = { pickFile() },
-                log = {
-                    logs += "\n" + it
-                    println(it)
-                }
-            )
-        }
+        }) { StateMachine(context) { pickFile() } }
     }
 }
 
