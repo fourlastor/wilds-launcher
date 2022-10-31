@@ -13,10 +13,19 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
     var state: State by remember { mutableStateOf(InitialState()) }
 
     if (state is InitialState) {
-        val dir = context.settingsService.getDir()
         val jar = context.settingsService.getJar()
 
-        state = if (dir.isNotEmpty() && jar.isNotEmpty() && File(dir, jar).exists()) LauncherState() else JarPickerState()
+        if (jar.isNotEmpty()) {
+            if (File(jar).exists()) {
+                state = LauncherState()
+            }
+            else {
+                state = OkDialogState(arrayOf("The configured pokewilds.jar does not exist.")) { state = JarPickerState() }
+            }
+        }
+        else {
+            state = JarPickerState()
+        }
     }
 
     var devMode by remember { mutableStateOf(context.settingsService.getDevMode()) }
@@ -40,9 +49,14 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
 
         is JarPickerState -> {
             JarPicker(
-                downloadLatestRelease = { state = DownloaderState {
-                    state = OkDialogState(arrayOf("Failed to download latest release.")) { state = JarPickerState() }
-                } },
+                downloadLatestRelease = { state = DownloaderState(
+                    onSuccess = {
+                        state = OkDialogState(arrayOf("Successfully downloaded latest release!.")) { state = LauncherState() }
+                    },
+                    onError = {
+                        state = OkDialogState(arrayOf("Failed to download latest release.")) { state = JarPickerState() }
+                    }
+                ) },
                 findJar = {
                     val jarFile = context.releaseService.findInstallation()
 
@@ -51,19 +65,13 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                         return@JarPicker
                     }
 
-                    val directory = jarFile.parentFile.absolutePath
-                    val jar = jarFile.name
-
-                    context.settingsService.setDir(directory)
-                    context.settingsService.setJar(jar)
+                    context.settingsService.setJar(jarFile.absolutePath)
 
                     state = OkDialogState(arrayOf("Found pokewilds.jar!", "(${jarFile.absoluteFile})")) { state = LauncherState() }
                 },
                 pickJar = getPokeWildsLocation,
                 saveWildsDir = { dir, jar ->
-                    context.settingsService.setDir(dir)
-                    context.settingsService.setJar(jar)
-
+                    context.settingsService.setJar(File(dir, jar).absolutePath)
                     state = LauncherState()
                 }
             )
@@ -101,9 +109,14 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                 onUpdateFound = {
                     state = YesNoDialogState(
                         lines = arrayOf("There is an update available (${context.releaseService.getLatestReleaseVersion()}).", "Do you want to download it?"),
-                        onYes = { state = DownloaderState {
-                            state = OkDialogState(arrayOf("Failed to download latest release.")) { state = LauncherState() }
-                        } },
+                        onYes = { state = DownloaderState(
+                            onSuccess = {
+                                state = OkDialogState(arrayOf("Successfully downloaded latest release!")) { state = LauncherState() }
+                            },
+                            onError = {
+                                state = OkDialogState(arrayOf("Failed to download latest release.")) { state = LauncherState() }
+                            }
+                        ) },
                         onNo = { state = LauncherState() }
                     )
                 },
@@ -122,12 +135,7 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
 
         is DownloaderState -> {
             val downloaderState = state as DownloaderState
-            Downloader(context, { dir, jar ->
-                context.settingsService.setDir(dir)
-                context.settingsService.setJar(jar)
-
-                state = LauncherState()
-            }, downloaderState.onError)
+            Downloader(context, downloaderState.onSuccess, downloaderState.onError)
         }
     }
 }

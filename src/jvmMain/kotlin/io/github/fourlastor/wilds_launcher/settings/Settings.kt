@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Settings(
-    var dir: String = "",
     var jar: String = "",
     var devMode: Boolean = false,
     var logsEnabled: Boolean = false,

@@ -4,13 +4,19 @@ import io.github.fourlastor.wilds_launcher.Context
 import java.io.File
 
 fun Context.getInstalledReleaseSizeInBytes(): Long? {
-    val file = File(this.settingsService.getDir())
+    val jar = this.settingsService.getJar()
 
-    if (!file.exists()) {
+    if (jar.isEmpty()) {
         return null
     }
 
-    val rootDirectory = file.parentFile?.parentFile ?: return null
+    val jarFile = File(jar)
+
+    if (!jarFile.exists()) {
+        return null
+    }
+
+    val rootDirectory = jarFile.parentFile?.parentFile?.parentFile ?: return null
     val totalSizeInBytes = rootDirectory.walkTopDown().filter { it.isFile }.map { it.length() }.sum()
 
     return totalSizeInBytes

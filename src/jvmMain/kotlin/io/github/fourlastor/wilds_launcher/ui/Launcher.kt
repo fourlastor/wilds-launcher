@@ -124,7 +124,7 @@ fun Launcher(
                                 log = { context.logger.log(it) }
                             }
 
-                            val file = File(context.settingsService.getDir(), context.settingsService.getJar())
+                            val file = File(context.settingsService.getJar())
 
                             val runArgs = mutableListOf("java", "-jar", file.absolutePath).apply {
                                 if (context.settingsService.getAngleGles20()) {

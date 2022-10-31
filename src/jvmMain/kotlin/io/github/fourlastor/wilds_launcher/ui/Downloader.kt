@@ -12,10 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.fourlastor.wilds_launcher.Context
 import kotlinx.coroutines.launch
-import java.io.File
 
 @Composable
-fun Downloader(context: Context, saveWildsDir: (String, String) -> Unit, onError: () -> Unit) {
+fun Downloader(context: Context, onSuccess: () -> Unit, onError: () -> Unit) {
     val startDownload = remember { mutableStateOf(true) }
     val progress = remember { mutableStateOf(0f) }
 
@@ -30,10 +29,15 @@ fun Downloader(context: Context, saveWildsDir: (String, String) -> Unit, onError
                 return@launch
             }
 
-            val gameDirectory = rootDirectory.walk().drop(1).first()
-            val appDirectory = gameDirectory.absolutePath + File.separator + "app"
+            val jarFile = context.releaseService.findInstallation()
 
-            saveWildsDir(appDirectory, FILENAME)
+            if (jarFile == null) {
+                onError()
+                return@launch
+            }
+
+            context.settingsService.setJar(jarFile.absolutePath)
+            onSuccess()
         }
     }
 

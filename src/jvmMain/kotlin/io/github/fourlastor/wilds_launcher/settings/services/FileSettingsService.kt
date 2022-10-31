@@ -32,15 +32,6 @@ class FileSettingsService(
         file.delete()
     }
 
-    override fun getDir(): String {
-        return settings.dir
-    }
-
-    override fun setDir(dir: String) {
-        settings.dir = dir
-        save()
-    }
-
     override fun getJar(): String {
         return settings.jar
     }

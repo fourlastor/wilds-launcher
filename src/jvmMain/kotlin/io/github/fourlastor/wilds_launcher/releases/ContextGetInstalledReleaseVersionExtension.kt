@@ -4,13 +4,19 @@ import io.github.fourlastor.wilds_launcher.Context
 import java.io.File
 
 fun Context.getInstalledReleaseVersion(): String? {
-    val file = File(this.settingsService.getDir())
+    val jar = this.settingsService.getJar()
 
-    if (!file.exists()) {
+    if (jar.isEmpty()) {
         return null
     }
 
-    val parent = file.parentFile
+    val jarFile = File(jar)
+
+    if (!jarFile.exists()) {
+        return null
+    }
+
+    val parent = jarFile.parentFile.parentFile
     val name = parent.name
     val parts = name.split('-')
 

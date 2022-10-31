@@ -5,9 +5,6 @@ interface SettingsService {
     fun save()
     fun clear()
 
-    fun getDir() : String
-    fun setDir(dir: String)
-
     fun getJar() : String
     fun setJar(jar: String)
 
