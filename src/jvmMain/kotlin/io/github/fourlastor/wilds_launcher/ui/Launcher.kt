@@ -65,7 +65,7 @@ fun Launcher(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(
                             checked = devMode,
-                            onCheckedChange = onDevModeChanged,
+                            onCheckedChange = onDevModeChanged
                         )
                         Text("Dev Mode")
                     }

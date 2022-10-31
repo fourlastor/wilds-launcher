@@ -1,34 +1,54 @@
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import io.github.fourlastor.wilds_launcher.App
-import io.github.fourlastor.wilds_launcher.AppComponent
-import io.github.fourlastor.wilds_launcher.settings.Dirs
-import io.github.fourlastor.wilds_launcher.settings.SettingsRepository
-import io.github.fourlastor.wilds_launcher.settings.SettingsViewModel
+import io.github.fourlastor.wilds_launcher.settings.*
+import io.github.fourlastor.wilds_launcher.ui.StateMachine
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import net.harawata.appdirs.AppDirsFactory
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
 import java.awt.FileDialog
 
 const val TITLE = "PokeWilds Launcher"
 
 fun main() {
-    val module = module {
-        single { AppDirsFactory.getInstance() }
-        single { Dirs(get()) }
-        single { Dispatchers }
-        single { SettingsRepository(get(), get()) }
-        single { SettingsViewModel(get(), get()) }
-    }
-    startKoin {
-        printLogger()
-        modules(module)
-    }
+    val dirs = Dirs(AppDirsFactory.getInstance())
+    val scope = CoroutineScope(Dispatchers.Default)
+
+    val configFile = dirs.getConfigFile()
+    val settings = loadSettings(configFile) ?: Settings()
+
+    var logs = ""
+
     application {
-        Window(title = TITLE, onCloseRequest = ::exitApplication) {
-            App(AppComponent()) { pickFile() }
+        Window(title = TITLE, onCloseRequest = {
+            scope.cancel()
+            exitApplication()
+        }) {
+            StateMachine(
+                settings,
+                scope = scope,
+                getPokeWildsLocation = { pickFile() },
+                devMode = settings.devMode,
+                onDevModeChanged = {
+                    settings.devMode = it
+                    settings.save(configFile)
+                },
+                saveWildsDir = { dir, jar ->
+                    settings.dir = dir
+                    settings.jar = jar
+
+                    settings.save(configFile)
+                },
+                clearData = {
+                    settings.clear()
+                    configFile.delete()
+                },
+                log = { message ->
+                    logs += "\n" + message
+                    println(message)
+                }
+            )
         }
     }
 }

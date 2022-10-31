@@ -6,21 +6,30 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
 import io.github.fourlastor.wilds_launcher.getLatestReleaseVersion
+import io.github.fourlastor.wilds_launcher.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 @Composable
-fun UpdateChecker(scope: CoroutineScope, onUpdateFound: () -> Unit) {
+fun UpdateChecker(settings: Settings, scope: CoroutineScope, onUpdateFound: () -> Unit, onNoUpdateFound: () -> Unit, onError: () -> Unit) {
     scope.launch {
-        //val installedReleaseVersion = getInstalledReleaseVersion(viewModel.manager.state.value as SettingsState.Loaded)
-        val latestReleaseVersion = getLatestReleaseVersion() ?: return@launch
+        val installedReleaseVersion = getInstalledReleaseVersion(File(settings.dir))
+        val latestReleaseVersion = getLatestReleaseVersion()
 
-        //if (installedReleaseVersion != null && installedReleaseVersion >= latestReleaseVersion) {
-            onUpdateFound()
-        //}
+        if (latestReleaseVersion == null) {
+            onError()
+            return@launch
+        }
 
-        //viewModel.manager.update { SettingsState.Downloading }
+        if (installedReleaseVersion != null && installedReleaseVersion >= latestReleaseVersion) {
+            onNoUpdateFound()
+            return@launch
+        }
+
+        onUpdateFound()
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

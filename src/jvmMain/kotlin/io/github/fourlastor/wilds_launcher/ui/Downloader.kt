@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
-fun Downloader(scope: CoroutineScope, saveWildsDir: (String, String) -> Unit) {
+fun Downloader(scope: CoroutineScope, saveWildsDir: (String, String) -> Unit, onError: () -> Unit) {
     val startDownload = remember { mutableStateOf(true) }
     val progress = remember { mutableStateOf(0f) }
 
@@ -24,7 +24,13 @@ fun Downloader(scope: CoroutineScope, saveWildsDir: (String, String) -> Unit) {
         startDownload.value = false
 
         scope.launch {
-            val rootDirectory = downloadLatestRelease { progress.value = it } ?: return@launch
+            val rootDirectory = downloadLatestRelease { progress.value = it }
+
+            if (rootDirectory == null) {
+                onError()
+                return@launch
+            }
+
             val gameDirectory = rootDirectory.walk().drop(1).first()
             val appDirectory = gameDirectory.absolutePath + File.separator + "app"
 

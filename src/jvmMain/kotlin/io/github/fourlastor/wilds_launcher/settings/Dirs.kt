@@ -1,6 +1,7 @@
 package io.github.fourlastor.wilds_launcher.settings
 
 import net.harawata.appdirs.AppDirs
+import java.io.File
 
 class Dirs(
     private val appDirs: AppDirs,
@@ -11,4 +12,8 @@ class Dirs(
             "1.0.0",
             "io.github.fourlastor"
         )
+
+    fun getConfigFile(): File {
+        return File(config, "config.json")
+    }
 }
