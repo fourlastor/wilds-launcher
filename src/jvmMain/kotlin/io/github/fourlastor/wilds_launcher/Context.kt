@@ -9,5 +9,6 @@ data class Context(
     val coroutineScope: CoroutineScope,
     val settingsService: SettingsService,
     val releaseService: ReleaseService,
-    val logger: Logger
+    val logger: Logger,
+    var process : Process? = null,
 )

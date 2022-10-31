@@ -7,18 +7,20 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.fourlastor.wilds_launcher.Context
+import io.github.fourlastor.wilds_launcher.extensions.capture
+import io.github.fourlastor.wilds_launcher.extensions.fullTrace
 import io.github.fourlastor.wilds_launcher.releases.getInstalledReleaseVersion
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.io.File
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun Launcher(
     context: Context,
@@ -28,15 +30,16 @@ fun Launcher(
     onLogsEnabledChanged: (Boolean) -> Unit,
     angleGles20: Boolean,
     onAngleGles20Changed: (Boolean) -> Unit,
-    runPokeWilds: () -> Unit,
     clearSettings: () -> Unit,
     checkForUpdates: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val changelog = remember { mutableStateOf("Loading changelog...") }
+
+    var changelog by remember { mutableStateOf("Loading changelog...") }
+    var isPokeWildsStarted by remember { mutableStateOf(false) }
 
     context.coroutineScope.launch {
-        changelog.value = context.releaseService.getLatestReleaseChangelog() ?: "Failed to load changelog."
+        changelog = context.releaseService.getLatestReleaseChangelog() ?: "Failed to load changelog."
     }
 
     Box(
@@ -45,7 +48,7 @@ fun Launcher(
             .padding(8.dp)
             .verticalScroll(scrollState)
     ) {
-        Text(changelog.value)
+        Text(changelog)
     }
 
     Box(
@@ -102,8 +105,60 @@ fun Launcher(
 
                 Spacer(modifier = Modifier.width(Dp(10f)))
 
-                Button(runPokeWilds) {
-                    Text("Start PokeWilds")
+                if (isPokeWildsStarted) {
+                    Button({
+                        context.process!!.destroy()
+                        context.process = null
+                    }, colors = ButtonDefaults.buttonColors(Color.Red)) {
+                        Text("Stop PokeWilds")
+                    }
+                }
+                else {
+                    Button({
+                        val threadContext = newSingleThreadContext("pokeWildsJar")
+
+                        context.coroutineScope.launch(threadContext) {
+                            var log: ((String) -> Unit)? = null
+
+                            if (context.settingsService.getLogsEnabled()) {
+                                log = { context.logger.log(it) }
+                            }
+
+                            val file = File(context.settingsService.getDir(), context.settingsService.getJar())
+
+                            val runArgs = mutableListOf("java", "-jar", file.absolutePath).apply {
+                                if (context.settingsService.getAngleGles20()) {
+                                    add("angle_gles20")
+                                }
+
+                                if (context.settingsService.getDevMode()) {
+                                    add("dev")
+                                }
+                            }.toTypedArray()
+
+                            try {
+                                log?.invoke("Running ${runArgs.joinToString(" ")}")
+
+                                val process = withContext(Dispatchers.IO) {
+                                    ProcessBuilder(*runArgs).directory(file.parentFile).start()
+                                }
+
+                                if (log != null) {
+                                    process.inputStream.capture(log)
+                                    process.errorStream.capture(log)
+                                }
+
+                                context.process = process
+
+                                isPokeWildsStarted = true
+                                process.onExit().thenApply { isPokeWildsStarted = false }
+                            } catch (exception: Throwable) {
+                                log?.invoke(exception.fullTrace())
+                            }
+                        }
+                    }) {
+                        Text("Start PokeWilds")
+                    }
                 }
             }
         }

@@ -3,16 +3,10 @@ package io.github.fourlastor.wilds_launcher.ui
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import io.github.fourlastor.wilds_launcher.Context
-import io.github.fourlastor.wilds_launcher.runPokeWilds
 import io.github.fourlastor.wilds_launcher.states.*
 import io.github.fourlastor.wilds_launcher.states.State
-import io.github.fourlastor.wilds_launcher.ui.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 import java.io.File
 
-@OptIn(DelicateCoroutinesApi::class)
 @Composable
 @Preview
 fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, String>?) {
@@ -76,24 +70,6 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                 onAngleGles20Changed = {
                     context.settingsService.setAngleGles20(it)
                     angleGles20 = it
-                },
-                runPokeWilds = {
-                    val threadContext = newSingleThreadContext("pokeWildsJar")
-
-                    context.coroutineScope.launch(threadContext) {
-                        var log: ((String) -> Unit)? = null
-
-                        if (context.settingsService.getLogsEnabled()) {
-                            log = { context.logger.log(it) }
-                        }
-
-                        runPokeWilds(
-                            file = File(context.settingsService.getDir(), context.settingsService.getJar()),
-                            angleGles20 = context.settingsService.getAngleGles20(),
-                            devMode = context.settingsService.getDevMode(),
-                            log = log
-                        )
-                    }
                 },
                 clearSettings = {
                     context.settingsService.clear()
