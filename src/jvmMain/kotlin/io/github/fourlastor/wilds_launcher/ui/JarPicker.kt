@@ -17,7 +17,8 @@ const val FILENAME_ALT = "pokemon-wilds.jar"
 @Composable
 fun JarPicker(
     downloadLatestRelease: () -> Unit,
-    pickFile: () -> Pair<String, String>?,
+    findJar: () -> Unit,
+    pickJar: () -> Pair<String, String>?,
     saveWildsDir: (String, String) -> Unit,
 ) {
     Box(
@@ -28,13 +29,21 @@ fun JarPicker(
             Button(downloadLatestRelease) {
                 Text("Download latest release")
             }
+
             Text("or")
+
+            Button(findJar, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)) {
+                Text("Find pokewilds.jar")
+            }
+
+            Text("or")
+
             Button({
-                pickFile()
+                pickJar()
                     ?.takeIf { (_, jar) -> jar == FILENAME || jar == FILENAME_ALT }
                     ?.also { (dir, jar) -> saveWildsDir(dir, jar) }
             }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)) {
-                Text("Select pokewilds.jar file")
+                Text("Select pokewilds.jar")
             }
         }
     }
