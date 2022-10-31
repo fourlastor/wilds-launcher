@@ -10,21 +10,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import io.github.fourlastor.wilds_launcher.downloadLatestRelease
-import kotlinx.coroutines.CoroutineScope
+import io.github.fourlastor.wilds_launcher.Context
 import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
-fun Downloader(scope: CoroutineScope, saveWildsDir: (String, String) -> Unit, onError: () -> Unit) {
+fun Downloader(context: Context, saveWildsDir: (String, String) -> Unit, onError: () -> Unit) {
     val startDownload = remember { mutableStateOf(true) }
     val progress = remember { mutableStateOf(0f) }
 
     if (startDownload.value) {
         startDownload.value = false
 
-        scope.launch {
-            val rootDirectory = downloadLatestRelease { progress.value = it }
+        context.coroutineScope.launch {
+            val rootDirectory = context.releaseService.downloadLatestRelease { progress.value = it }
 
             if (rootDirectory == null) {
                 onError()

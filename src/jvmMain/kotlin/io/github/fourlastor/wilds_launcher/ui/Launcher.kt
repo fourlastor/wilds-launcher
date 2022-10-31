@@ -15,15 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
-import io.github.fourlastor.wilds_launcher.getLatestReleaseChangelog
-import kotlinx.coroutines.CoroutineScope
+import io.github.fourlastor.wilds_launcher.Context
+import io.github.fourlastor.wilds_launcher.releases.getInstalledReleaseVersion
 import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
 fun Launcher(
-    scope: CoroutineScope,
+    context: Context,
     directory: File,
     devMode: Boolean,
     onDevModeChanged: (Boolean) -> Unit,
@@ -38,8 +37,8 @@ fun Launcher(
     val scrollState = rememberScrollState()
     val changelog = remember { mutableStateOf("Loading changelog...") }
 
-    scope.launch {
-        changelog.value = getLatestReleaseChangelog() ?: "Failed to load changelog."
+    context.coroutineScope.launch {
+        changelog.value = context.releaseService.getLatestReleaseChangelog() ?: "Failed to load changelog."
     }
 
     Box(

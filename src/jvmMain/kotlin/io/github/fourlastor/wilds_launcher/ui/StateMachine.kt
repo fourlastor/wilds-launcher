@@ -2,13 +2,11 @@ package io.github.fourlastor.wilds_launcher.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
-import io.github.fourlastor.wilds_launcher.getLatestReleaseVersion
+import io.github.fourlastor.wilds_launcher.Context
 import io.github.fourlastor.wilds_launcher.runPokeWilds
-import io.github.fourlastor.wilds_launcher.settings.Settings
 import io.github.fourlastor.wilds_launcher.states.*
 import io.github.fourlastor.wilds_launcher.states.State
 import io.github.fourlastor.wilds_launcher.ui.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
@@ -18,22 +16,22 @@ import java.io.File
 @Composable
 @Preview
 fun StateMachine(
-    settings: Settings,
-    scope: CoroutineScope,
+    context: Context,
     getPokeWildsLocation: () -> Pair<String, String>?,
-    devMode: Boolean,
-    onDevModeChanged: (Boolean) -> Unit,
-    saveWildsDir: (String, String) -> Unit,
-    clearData: () -> Unit,
     log: (String) -> Unit,
 ) {
-    var devMode by remember { mutableStateOf(devMode) }
-
     var state: State by remember { mutableStateOf(InitialState()) }
 
     if (state is InitialState) {
-        state = if (settings.dir.isNotEmpty() && settings.jar.isNotEmpty() && File(settings.dir, settings.jar).exists()) LauncherState() else JarPickerState()
+        val dir = context.settingsService.getDir()
+        val jar = context.settingsService.getJar()
+
+        state = if (dir.isNotEmpty() && jar.isNotEmpty() && File(dir, jar).exists()) LauncherState() else JarPickerState()
     }
+
+    var devMode by remember { mutableStateOf(context.settingsService.getDevMode()) }
+    var logsEnabled by remember { mutableStateOf(context.settingsService.getLogsEnabled()) }
+    var angleGles20 by remember { mutableStateOf(context.settingsService.getAngleGles20()) }
 
     when (state) {
         is OkDialogState -> {
@@ -57,7 +55,9 @@ fun StateMachine(
                 } },
                 pickFile = getPokeWildsLocation,
                 saveWildsDir = { dir, jar ->
-                    saveWildsDir(dir, jar)
+                    context.settingsService.setDir(dir)
+                    context.settingsService.setJar(jar)
+
                     state = LauncherState()
                 }
             )
@@ -65,37 +65,43 @@ fun StateMachine(
 
         is LauncherState -> {
             Launcher(
-                scope = scope,
-                directory = File(settings.dir),
+                context = context,
+                directory = File(context.settingsService.getDir()),
                 devMode = devMode,
                 onDevModeChanged = {
+                    context.settingsService.setDevMode(it)
                     devMode = it
-                    onDevModeChanged(it)
                 },
-                logsEnabled = settings.logsEnabled,
-                onLogsEnabledChanged = { settings.logsEnabled = it },
-                angleGles20 = settings.angleGles20,
-                onAngleGles20Changed = { settings.angleGles20 = it },
+                logsEnabled = logsEnabled,
+                onLogsEnabledChanged = {
+                    context.settingsService.setLogsEnabled(it)
+                    logsEnabled = it
+                },
+                angleGles20 = angleGles20,
+                onAngleGles20Changed = {
+                    context.settingsService.setAngleGles20(it)
+                    angleGles20 = it
+                },
                 runPokeWilds = {
-                    val context = newSingleThreadContext("pokeWildsJar")
+                    val threadContext = newSingleThreadContext("pokeWildsJar")
 
-                    scope.launch(context) {
+                    context.coroutineScope.launch(threadContext) {
                         var log: ((String) -> Unit)? = null
 
-                        if (settings.logsEnabled) {
+                        if (context.settingsService.getLogsEnabled()) {
                             log = { log(it) }
                         }
 
                         runPokeWilds(
-                            File(settings.dir, settings.jar),
-                            settings.angleGles20,
-                            settings.devMode,
-                            log
+                            file = File(context.settingsService.getDir(), context.settingsService.getJar()),
+                            angleGles20 = context.settingsService.getAngleGles20(),
+                            devMode = context.settingsService.getDevMode(),
+                            log = log
                         )
                     }
                 },
                 clearData = {
-                    clearData()
+                    context.settingsService.clear()
                     state = JarPickerState()
                 },
                 checkForUpdates = { state = UpdateCheckerState() }
@@ -104,11 +110,10 @@ fun StateMachine(
 
         is UpdateCheckerState -> {
             UpdateChecker(
-                settings = settings,
-                scope = scope,
+                context = context,
                 onUpdateFound = {
                     state = YesNoDialogState(
-                        lines = arrayOf("There is an update available (${getLatestReleaseVersion()}).", "Do you want to download it?"),
+                        lines = arrayOf("There is an update available (${context.releaseService.getLatestReleaseVersion()}).", "Do you want to download it?"),
                         onYes = { state = DownloaderState {
                             state = OkDialogState(arrayOf("Failed to download latest release.")) { state = LauncherState() }
                         } },
@@ -130,9 +135,9 @@ fun StateMachine(
 
         is DownloaderState -> {
             val downloaderState = state as DownloaderState
-            Downloader(scope, { dir, jar ->
-                settings.dir = dir
-                settings.jar = jar
+            Downloader(context, { dir, jar ->
+                context.settingsService.setDir(dir)
+                context.settingsService.setJar(jar)
 
                 state = LauncherState()
             }, downloaderState.onError)

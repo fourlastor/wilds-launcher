@@ -6,18 +6,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import io.github.fourlastor.wilds_launcher.getInstalledReleaseVersion
-import io.github.fourlastor.wilds_launcher.getLatestReleaseVersion
-import io.github.fourlastor.wilds_launcher.settings.Settings
-import kotlinx.coroutines.CoroutineScope
+import io.github.fourlastor.wilds_launcher.Context
+import io.github.fourlastor.wilds_launcher.releases.getInstalledReleaseVersion
 import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
-fun UpdateChecker(settings: Settings, scope: CoroutineScope, onUpdateFound: () -> Unit, onNoUpdateFound: () -> Unit, onError: () -> Unit) {
-    scope.launch {
-        val installedReleaseVersion = getInstalledReleaseVersion(File(settings.dir))
-        val latestReleaseVersion = getLatestReleaseVersion()
+fun UpdateChecker(context: Context, onUpdateFound: () -> Unit, onNoUpdateFound: () -> Unit, onError: () -> Unit) {
+    context.coroutineScope.launch {
+        val installedReleaseVersion = getInstalledReleaseVersion(File(context.settingsService.getDir()))
+        val latestReleaseVersion = context.releaseService.getLatestReleaseVersion()
 
         if (latestReleaseVersion == null) {
             onError()
