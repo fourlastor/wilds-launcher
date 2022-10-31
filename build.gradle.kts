@@ -50,7 +50,6 @@ compose.desktop {
 
 dependencies {
     commonMainImplementation("net.harawata:appdirs:1.2.1")
-    commonMainImplementation("io.insert-koin:koin-core:3.2.0")
 
     commonMainImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
