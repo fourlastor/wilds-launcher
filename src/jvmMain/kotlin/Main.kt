@@ -18,8 +18,13 @@ const val TITLE = "PokeWilds Launcher"
 fun main() {
     val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    val dirs = Dirs(AppDirsFactory.getInstance())
-    val configFile = dirs.getConfigFile()
+    val appDirs = AppDirsFactory.getInstance()
+    val config = appDirs.getUserConfigDir(
+        "wilds-launcher",
+        "1.0.0",
+        "io.github.fourlastor"
+    )
+    val configFile = File(config, "config.json")
 
     val settingsService: SettingsService = FileSettingsService(configFile)
     settingsService.load()
