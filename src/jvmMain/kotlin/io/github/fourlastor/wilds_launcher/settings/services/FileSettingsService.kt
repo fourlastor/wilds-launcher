@@ -37,7 +37,7 @@ class FileSettingsService(
     }
 
     override fun setJar(jar: String) {
-        settings.jar = jar
+        settings = settings.copy(jar = jar)
         save()
     }
 
@@ -46,7 +46,7 @@ class FileSettingsService(
     }
 
     override fun setDevMode(devMode: Boolean) {
-        settings.devMode = devMode
+        settings = settings.copy(devMode = devMode)
         save()
     }
 
@@ -55,7 +55,7 @@ class FileSettingsService(
     }
 
     override fun setLogsEnabled(logsEnabled: Boolean) {
-        settings.logsEnabled = logsEnabled
+        settings = settings.copy(logsEnabled = logsEnabled)
         save()
     }
 
@@ -64,7 +64,7 @@ class FileSettingsService(
     }
 
     override fun setAngleGles20(angleGles20: Boolean) {
-        settings.angleGles20 = angleGles20
+        settings = settings.copy(angleGles20 = angleGles20)
         save()
     }
 }

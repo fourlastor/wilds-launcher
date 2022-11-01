@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Settings(
-    var jar: String = "",
-    var devMode: Boolean = false,
-    var logsEnabled: Boolean = false,
-    var angleGles20: Boolean = false,
+    val jar: String = "",
+    val devMode: Boolean = false,
+    val logsEnabled: Boolean = false,
+    val angleGles20: Boolean = false,
 )
