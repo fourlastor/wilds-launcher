@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="wilds-launcher-jvm-1.1.0">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="wilds-launcher-jvm-1.1.0.jar">
+      <element id="module-output" name="wilds-launcher.jvmMain" />
+    </root>
+  </artifact>
+</component>

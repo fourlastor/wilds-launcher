@@ -53,4 +53,6 @@ dependencies {
 
     commonMainImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+
+    commonMainImplementation("com.google.dagger:dagger-android:2.20")
 }
