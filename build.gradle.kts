@@ -1,10 +1,10 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
-    kotlin("plugin.serialization") version "1.6.10"
+    val kotlinVersion = "1.7.20"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
+    id("org.jetbrains.compose") version "1.2.1"
 }
 
 val appVersion = requireNotNull(property("io.github.fourlastor.wilds_launcher.version") as? String)
@@ -18,23 +18,8 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
-kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-            kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-        }
-        withJava()
-    }
-    @Suppress("UNUSED_VARIABLE")
-    sourceSets {
-        val jvmMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-            }
-        }
-        val jvmTest by getting
-    }
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
 }
 
 compose.desktop {
@@ -49,10 +34,9 @@ compose.desktop {
 }
 
 dependencies {
-    commonMainImplementation("net.harawata:appdirs:1.2.1")
-
-    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
-
-    commonMainImplementation("com.google.dagger:dagger-android:2.20")
+    implementation(compose.desktop.currentOs)
+    implementation("net.harawata:appdirs:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+    implementation("com.google.dagger:dagger-android:2.44.2")
 }
