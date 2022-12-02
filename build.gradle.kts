@@ -1,8 +1,10 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     val kotlinVersion = "1.7.20"
     kotlin("jvm") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("org.jetbrains.compose") version "1.2.1"
 }
@@ -38,5 +40,7 @@ dependencies {
     implementation("net.harawata:appdirs:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-    implementation("com.google.dagger:dagger-android:2.44.2")
+    val daggerVersion = "2.44.2"
+    implementation("com.google.dagger:dagger-android:$daggerVersion")
+    kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 }
