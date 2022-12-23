@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
-fun OkDialog(lines: Array<String>, onOk: () -> Unit) {
+fun OkDialog(lines: List<String>, onOk: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             lines.forEach { Text(it, textAlign = TextAlign.Center) }

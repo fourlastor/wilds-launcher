@@ -20,7 +20,7 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                 state = LauncherState()
             }
             else {
-                state = OkDialogState(arrayOf("The configured pokewilds.jar does not exist.")) { state = JarPickerState() }
+                state = OkDialogState(listOf("The configured pokewilds.jar does not exist.")) { state = JarPickerState() }
             }
         }
         else {
@@ -51,23 +51,23 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
             JarPicker(
                 downloadLatestRelease = { state = DownloaderState(
                     onSuccess = {
-                        state = OkDialogState(arrayOf("Successfully downloaded latest release!.")) { state = LauncherState() }
+                        state = OkDialogState(listOf("Successfully downloaded latest release!.")) { state = LauncherState() }
                     },
                     onError = {
-                        state = OkDialogState(arrayOf("Failed to download latest release.")) { state = JarPickerState() }
+                        state = OkDialogState(listOf("Failed to download latest release.")) { state = JarPickerState() }
                     }
                 ) },
                 findJar = {
                     val jarFile = context.releaseService.findInstallation()
 
                     if (jarFile == null) {
-                        state = OkDialogState(arrayOf("Could not find pokewilds.jar.")) { state = JarPickerState() }
+                        state = OkDialogState(listOf("Could not find pokewilds.jar.")) { state = JarPickerState() }
                         return@JarPicker
                     }
 
                     context.settingsService.setJar(jarFile.absolutePath)
 
-                    state = OkDialogState(arrayOf("Found pokewilds.jar!", "(${jarFile.absoluteFile})")) { state = LauncherState() }
+                    state = OkDialogState(listOf("Found pokewilds.jar!", "(${jarFile.absoluteFile})")) { state = LauncherState() }
                 },
                 pickJar = getPokeWildsLocation,
                 saveWildsDir = { dir, jar ->
@@ -108,13 +108,13 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                 context = context,
                 onUpdateFound = {
                     state = YesNoDialogState(
-                        lines = arrayOf("There is an update available (${context.releaseService.getLatestReleaseVersion()}).", "Do you want to download it?"),
+                        lines = listOf("There is an update available (${context.releaseService.getLatestReleaseVersion()}).", "Do you want to download it?"),
                         onYes = { state = DownloaderState(
                             onSuccess = {
-                                state = OkDialogState(arrayOf("Successfully downloaded latest release!")) { state = LauncherState() }
+                                state = OkDialogState(listOf("Successfully downloaded latest release!")) { state = LauncherState() }
                             },
                             onError = {
-                                state = OkDialogState(arrayOf("Failed to download latest release.")) { state = LauncherState() }
+                                state = OkDialogState(listOf("Failed to download latest release.")) { state = LauncherState() }
                             }
                         ) },
                         onNo = { state = LauncherState() }
@@ -122,12 +122,12 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
                 },
                 onNoUpdateFound = {
                     state = OkDialogState(
-                        arrayOf("No updates found.")
+                        listOf("No updates found.")
                     ) { state = LauncherState() }
                 },
                 onError = {
                     state = OkDialogState(
-                        arrayOf("Failed to check for updates.")
+                        listOf("Failed to check for updates.")
                     ) { state = LauncherState()
                 }
             })

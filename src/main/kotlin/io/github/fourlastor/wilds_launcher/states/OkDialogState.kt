@@ -1,6 +1,6 @@
 package io.github.fourlastor.wilds_launcher.states
 
 data class OkDialogState(
-    val lines: Array<String>,
+    val lines: List<String>,
     val onOk: () -> Unit
 ) : State

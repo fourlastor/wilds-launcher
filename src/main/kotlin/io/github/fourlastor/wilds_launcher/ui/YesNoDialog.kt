@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 
 @Composable
-fun YesNoDialog(lines: Array<String>, onYes: () -> Unit, onNo: () -> Unit) {
+fun YesNoDialog(lines: List<String>, onYes: () -> Unit, onNo: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             lines.forEach { Text(it) }
