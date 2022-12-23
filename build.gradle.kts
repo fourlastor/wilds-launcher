@@ -1,12 +1,16 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
+@Suppress(
+    // known false positive: https://github.com/gradle/gradle/issues/22797
+    "DSL_SCOPE_VIOLATION"
+)
 plugins {
-    val kotlinVersion = "1.7.20"
-    kotlin("jvm") version kotlinVersion
-    kotlin("kapt") version kotlinVersion
-    kotlin("plugin.serialization") version kotlinVersion
-    id("org.jetbrains.compose") version "1.2.1"
+    alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 val appVersion = requireNotNull(property("io.github.fourlastor.wilds_launcher.version") as? String)
@@ -37,10 +41,14 @@ compose.desktop {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation("net.harawata:appdirs:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-    val daggerVersion = "2.44.2"
-    implementation("com.google.dagger:dagger-android:$daggerVersion")
-    kapt("com.google.dagger:dagger-compiler:$daggerVersion")
+    implementation(libs.appDirs)
+    implementation(libs.dagger)
+    implementation(libs.dagger)
+    kapt(libs.daggerCompiler)
+    implementation(libs.decompose)
+    implementation(libs.decomposeCompose)
+    implementation(libs.immutableCollections)
+    implementation(libs.kotlinCoroutines)
+    implementation(libs.okio)
+    implementation(libs.serializationJson)
 }
