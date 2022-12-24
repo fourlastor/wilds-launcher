@@ -1,35 +1,41 @@
 package io.github.fourlastor.wilds_launcher.settings.services
 
+import io.github.fourlastor.wilds_launcher.app.Dirs
 import io.github.fourlastor.wilds_launcher.settings.Settings
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SettingsService(
-    private val file: File,
+@Singleton
+class SettingsService @Inject constructor(
+    private val dirs: Dirs,
 ) {
     private var settings: Settings = Settings()
 
+    private fun settingsFile(): File = File(dirs.config)
+
     fun load() {
-        if (!file.exists()) {
+        if (!settingsFile().exists()) {
             return
         }
 
-        settings = Json.decodeFromString(file.readText())
+        settings = Json.decodeFromString(settingsFile().readText())
     }
 
     fun save() {
-        if (!file.exists()) {
-            file.parentFile.mkdirs()
+        if (!settingsFile().exists()) {
+            settingsFile().parentFile.mkdirs()
         }
 
-        file.writeText(Json.encodeToString(settings))
+        settingsFile().writeText(Json.encodeToString(settings))
     }
 
     fun clear() {
         settings = Settings()
-        file.delete()
+        settingsFile().delete()
     }
 
     fun getJar(): String {

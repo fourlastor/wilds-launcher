@@ -29,6 +29,7 @@ class LauncherApp @Inject constructor(
     private val navHostFactory: NavHostComponent.Factory,
     private val lifecycleRegistry: LifecycleRegistry,
     private val releaseService: GitHubReleaseService,
+    private val settingsService: SettingsService,
 ) {
 
     @OptIn(ExperimentalDecomposeApi::class)
@@ -53,9 +54,6 @@ class LauncherApp @Inject constructor(
         println(configDirectory)
         println(dataDirectory)
 
-        val settingsFile = File(configDirectory, "settings.json")
-
-        val settingsService = SettingsService(settingsFile)
         settingsService.load()
 
 
