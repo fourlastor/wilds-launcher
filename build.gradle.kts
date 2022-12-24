@@ -49,6 +49,14 @@ dependencies {
     implementation(libs.decomposeCompose)
     implementation(libs.immutableCollections)
     implementation(libs.kotlinCoroutines)
+    implementation(libs.lwjgl)
+    implementation(libs.lwjglNfd)
     implementation(libs.okio)
     implementation(libs.serializationJson)
+
+    val natives = arrayOf("linux", "macos", "macos-arm64", "windows")
+    for (distribution in natives) {
+        runtimeOnly("${libs.lwjgl.get()}:natives-$distribution")
+        runtimeOnly("${libs.lwjglNfd.get()}:natives-$distribution")
+    }
 }
