@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.decomposeCompose)
     implementation(libs.immutableCollections)
     implementation(libs.kotlinCoroutines)
+    implementation(libs.kotlinCoroutinesSwing)
     implementation(libs.lwjgl)
     implementation(libs.lwjglNfd)
     implementation(libs.okio)

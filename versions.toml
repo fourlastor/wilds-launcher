@@ -17,6 +17,7 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 decomposeCompose = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
 kotlinCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
+kotlinCoroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinCoroutines" }
 lwjgl = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
 lwjglNfd = { module = "org.lwjgl:lwjgl-nfd", version.ref = "lwjgl" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
