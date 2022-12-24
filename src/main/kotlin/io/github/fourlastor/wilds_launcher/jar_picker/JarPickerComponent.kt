@@ -1,6 +1,12 @@
 package io.github.fourlastor.wilds_launcher.jar_picker
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.overlay.OverlayNavigation
@@ -47,25 +53,30 @@ class JarPickerComponent @AssistedInject constructor(
             }
             dialogNavigation.dismiss()
         }
+
+        DialogConfig.DownloadLatest -> DownloadLatestComponent(context, releaseService) {
+            onUpdateJar(it)
+            dialogNavigation.dismiss()
+        }
     }
 
     @Composable
     override fun render() {
         val dialog = dialog.subscribeAsState()
-        JarPicker(
-            downloadLatestRelease = ::downloadLatest,
-            findJar = ::findJar,
-            pickJar = ::pickJar,
-        )
-        dialog.value.overlay?.instance?.render()
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                JarPicker(
+                    downloadLatestRelease = ::downloadLatest,
+                    findJar = ::findJar,
+                    pickJar = ::pickJar,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                dialog.value.overlay?.instance?.render()
+            }
+        }
     }
 
-    private fun downloadLatest() = scope.launch {
-        val file = withContext(Dispatchers.IO) {
-            releaseService.downloadLatestRelease { }
-        } ?: return@launch
-        onUpdateJar(file)
-    }
+    private fun downloadLatest() = dialogNavigation.activate(DialogConfig.DownloadLatest)
 
     private fun findJar() = scope.launch {
         val file = withContext(Dispatchers.IO) {
@@ -83,6 +94,7 @@ class JarPickerComponent @AssistedInject constructor(
 
     private sealed class DialogConfig : Parcelable {
         object PickJar : DialogConfig()
+        object DownloadLatest : DialogConfig()
     }
 
     @AssistedFactory

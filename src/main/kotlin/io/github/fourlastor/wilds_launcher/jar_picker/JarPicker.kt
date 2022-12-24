@@ -2,7 +2,6 @@ package io.github.fourlastor.wilds_launcher.jar_picker
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -16,10 +15,11 @@ fun JarPicker(
     downloadLatestRelease: () -> Unit,
     findJar: () -> Unit,
     pickJar: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(downloadLatestRelease) {
