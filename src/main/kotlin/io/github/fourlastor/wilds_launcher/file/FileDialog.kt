@@ -3,7 +3,7 @@ package io.github.fourlastor.wilds_launcher.file
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import io.github.fourlastor.wilds_launcher.extensions.fullTrace
+import io.github.fourlastor.wilds_launcher.extension.fullTrace
 import kotlinx.coroutines.launch
 import org.lwjgl.system.MemoryUtil.memAllocPointer
 import org.lwjgl.system.MemoryUtil.memFree

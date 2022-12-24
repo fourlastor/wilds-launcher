@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.fourlastor.wilds_launcher.Context
-import io.github.fourlastor.wilds_launcher.extensions.capture
-import io.github.fourlastor.wilds_launcher.extensions.fullTrace
+import io.github.fourlastor.wilds_launcher.extension.capture
+import io.github.fourlastor.wilds_launcher.extension.fullTrace
 import io.github.fourlastor.wilds_launcher.releases.getInstalledReleaseVersion
 import kotlinx.coroutines.*
 import java.io.File

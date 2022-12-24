@@ -1,4 +1,4 @@
-package io.github.fourlastor.wilds_launcher.extensions
+package io.github.fourlastor.wilds_launcher.extension
 
 fun Throwable.fullTrace(): String = """
         $message
