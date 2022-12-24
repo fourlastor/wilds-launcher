@@ -1,11 +1,12 @@
 package io.github.fourlastor.wilds_launcher.app
 
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class AppInfoModule {
+class AppModule {
     @Singleton
     @Provides
     fun appInfo() = AppInfo(
@@ -14,4 +15,8 @@ class AppInfoModule {
         version = "1.0.0",
         author = "io.github.fourlastor",
     )
+
+    @Singleton
+    @Provides
+    fun lifecycleRegistry() = LifecycleRegistry()
 }

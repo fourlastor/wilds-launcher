@@ -2,13 +2,18 @@ package io.github.fourlastor.wilds_launcher.app
 
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.singleWindowApplication
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.fourlastor.wilds_launcher.Context
 import io.github.fourlastor.wilds_launcher.logs.FileLogger
 import io.github.fourlastor.wilds_launcher.logs.Logger
+import io.github.fourlastor.wilds_launcher.navigation.NavHostComponent
 import io.github.fourlastor.wilds_launcher.releases.services.GitHubReleaseService
-import io.github.fourlastor.wilds_launcher.releases.services.ReleaseService
-import io.github.fourlastor.wilds_launcher.settings.services.FileSettingsService
 import io.github.fourlastor.wilds_launcher.settings.services.SettingsService
 import io.github.fourlastor.wilds_launcher.ui.StateMachine
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +26,20 @@ import javax.inject.Inject
 
 class LauncherApp @Inject constructor(
     private val appInfo: AppInfo,
+    private val navHostFactory: NavHostComponent.Factory,
+    private val lifecycleRegistry: LifecycleRegistry,
 ) {
+
+    @OptIn(ExperimentalDecomposeApi::class)
+    fun render() {
+        val windowState = WindowState()
+        val navHost = navHostFactory.create(DefaultComponentContext(lifecycleRegistry))
+        singleWindowApplication(state = windowState) {
+            LifecycleController(lifecycleRegistry, windowState)
+            navHost.render()
+        }
+    }
+
     fun start() {
 
         val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -36,11 +54,11 @@ class LauncherApp @Inject constructor(
 
         val settingsFile = File(configDirectory, "settings.json")
 
-        val settingsService: SettingsService = FileSettingsService(settingsFile)
+        val settingsService = SettingsService(settingsFile)
         settingsService.load()
 
         val installDirectory = File(dataDirectory)
-        val releaseService: ReleaseService = GitHubReleaseService(installDirectory)
+        val releaseService = GitHubReleaseService(installDirectory)
 
         val logFile = File("logs.log")
         val logger: Logger = FileLogger(logFile)
@@ -53,11 +71,10 @@ class LauncherApp @Inject constructor(
                 logger.shutdown()
 
                 exitApplication()
-            }) { StateMachine(context) { pickFile() } }
+            }) { StateMachine(context = context, getPokeWildsLocation = { pickFile() }) }
         }
     }
 }
-
 
 
 fun FrameWindowScope.pickFile(): Pair<String, String>? {

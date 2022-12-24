@@ -15,31 +15,31 @@ import java.net.URL
 const val READ_SIZE_IN_BYTES = 1024
 
 class GitHubReleaseService(
-    private val installDirectory : File
-) : ReleaseService {
-    override fun findInstallation(): File? {
+    private val installDirectory: File,
+) {
+    fun findInstallation(): File? {
         return installDirectory.walkTopDown()
             .filter { it.isFile }
             .filter { it.name == FILENAME || it.name == FILENAME_ALT }
             .firstOrNull()
     }
 
-    override fun getLatestReleaseVersion() : String? {
+    fun getLatestReleaseVersion(): String? {
         return getLatestReleaseProperty("name")
     }
 
-    override fun getLatestReleaseChangelog() : String? {
+    fun getLatestReleaseChangelog(): String? {
         return getLatestReleaseProperty("body")
     }
 
-    override fun getLatestReleaseSizeInBytes(): Long? {
+    fun getLatestReleaseSizeInBytes(): Long? {
         val version = getLatestReleaseVersion() ?: return null
         val connection = getURL(version).openConnection()
 
         return connection.contentLength.toLong()
     }
 
-    override fun downloadLatestRelease(onProgressChanged: (Float) -> Unit) : File? {
+    fun downloadLatestRelease(onProgressChanged: (Float) -> Unit): File? {
         val version = getLatestReleaseVersion()
 
         if (version == null) {
@@ -88,7 +88,7 @@ class GitHubReleaseService(
         return destination
     }
 
-    private fun getLatestReleaseProperty(name: String) : String? {
+    private fun getLatestReleaseProperty(name: String): String? {
         val url = URL("https://api.github.com/repos/SheerSt/pokewilds/releases/latest")
         val connection = url.openConnection() as HttpURLConnection
 
@@ -106,9 +106,8 @@ class GitHubReleaseService(
         val jsonObject = Json.parseToJsonElement(response) as JsonObject
 
         val jsonPrimitive = jsonObject[name] as JsonPrimitive
-        val content = jsonPrimitive.content
 
-        return content
+        return jsonPrimitive.content
     }
 
     private fun getFilenameWithoutExtension() : String {

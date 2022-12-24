@@ -4,7 +4,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppInfoModule::class])
+@Component(modules = [AppModule::class])
 interface AppComponent {
 
     fun app(): LauncherApp

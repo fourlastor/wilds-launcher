@@ -1,5 +1,7 @@
 import io.github.fourlastor.wilds_launcher.app.DaggerAppComponent
+import javax.swing.UIManager
 
 fun main() {
-    DaggerAppComponent.create().app().start()
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+    DaggerAppComponent.create().app().render()
 }
