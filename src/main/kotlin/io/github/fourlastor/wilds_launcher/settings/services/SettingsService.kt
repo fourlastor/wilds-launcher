@@ -15,7 +15,7 @@ class SettingsService @Inject constructor(
 ) {
     private var settings: Settings = Settings()
 
-    private fun settingsFile(): File = File(dirs.config)
+    private fun settingsFile(): File = File(dirs.config, "settings.json")
 
     fun load() {
         if (!settingsFile().exists()) {
@@ -25,7 +25,7 @@ class SettingsService @Inject constructor(
         settings = Json.decodeFromString(settingsFile().readText())
     }
 
-    fun save() {
+    private fun save() {
         if (!settingsFile().exists()) {
             settingsFile().parentFile.mkdirs()
         }

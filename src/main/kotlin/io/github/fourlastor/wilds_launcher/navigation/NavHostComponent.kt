@@ -28,7 +28,11 @@ class NavHostComponent @AssistedInject constructor(
         screenConfig: ScreenConfig,
         context: ComponentContext,
     ): Component = when (screenConfig) {
-        is ScreenConfig.JarPicker -> jarPickerFactory.create(context)
+        is ScreenConfig.JarPicker -> jarPickerFactory.create(context, ::goToLauncher)
+    }
+
+    private fun goToLauncher() {
+        println("Opening launcher...")
     }
 
     @Composable

@@ -1,6 +1,5 @@
 package io.github.fourlastor.wilds_launcher.app
 
-import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
@@ -20,7 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import net.harawata.appdirs.AppDirsFactory
-import java.awt.FileDialog
 import java.io.File
 import javax.inject.Inject
 
@@ -68,19 +66,7 @@ class LauncherApp @Inject constructor(
                 logger.shutdown()
 
                 exitApplication()
-            }) { StateMachine(context = context, getPokeWildsLocation = { pickFile() }) }
+            }) { StateMachine(context = context) }
         }
     }
-}
-
-
-fun FrameWindowScope.pickFile(): Pair<String, String>? {
-    FileDialog(window).apply {
-        isVisible = true
-        val file = file ?: return@apply
-        val directory = directory ?: return@apply
-
-        return directory to file
-    }
-    return null
 }

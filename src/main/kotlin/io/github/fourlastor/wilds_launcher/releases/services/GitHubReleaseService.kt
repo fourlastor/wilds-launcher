@@ -1,8 +1,7 @@
 package io.github.fourlastor.wilds_launcher.releases.services
 
 import io.github.fourlastor.wilds_launcher.app.Dirs
-import io.github.fourlastor.wilds_launcher.ui.FILENAME
-import io.github.fourlastor.wilds_launcher.ui.FILENAME_ALT
+import io.github.fourlastor.wilds_launcher.jar_picker.JarMatcher
 import io.github.fourlastor.wilds_launcher.unzipArchive
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -20,11 +19,12 @@ const val READ_SIZE_IN_BYTES = 1024
 @Singleton
 class GitHubReleaseService @Inject constructor(
     private val dirs: Dirs,
+    private val jarMatcher: JarMatcher,
 ) {
     fun findInstallation(): File? {
         return installDir().walkTopDown()
             .filter { it.isFile }
-            .filter { it.name == FILENAME || it.name == FILENAME_ALT }
+            .filter { jarMatcher.matches(it.name) }
             .firstOrNull()
     }
 

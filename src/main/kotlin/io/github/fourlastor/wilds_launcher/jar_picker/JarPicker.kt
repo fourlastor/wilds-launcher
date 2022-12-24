@@ -1,4 +1,4 @@
-package io.github.fourlastor.wilds_launcher.ui
+package io.github.fourlastor.wilds_launcher.jar_picker
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,15 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-const val FILENAME = "pokewilds.jar"
-const val FILENAME_ALT = "pokemon-wilds.jar"
-
 @Composable
 fun JarPicker(
     downloadLatestRelease: () -> Unit,
     findJar: () -> Unit,
-    pickJar: () -> Pair<String, String>?,
-    saveWildsDir: (String, String) -> Unit,
+    pickJar: () -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -38,11 +34,7 @@ fun JarPicker(
 
             Text("or")
 
-            Button({
-                pickJar()
-                    ?.takeIf { (_, jar) -> jar == FILENAME || jar == FILENAME_ALT }
-                    ?.also { (dir, jar) -> saveWildsDir(dir, jar) }
-            }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)) {
+            Button(pickJar, colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)) {
                 Text("Select pokewilds.jar")
             }
         }

@@ -1,15 +1,26 @@
 package io.github.fourlastor.wilds_launcher.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import io.github.fourlastor.wilds_launcher.Context
-import io.github.fourlastor.wilds_launcher.states.*
+import io.github.fourlastor.wilds_launcher.jar_picker.JarPicker
+import io.github.fourlastor.wilds_launcher.states.DownloaderState
+import io.github.fourlastor.wilds_launcher.states.InitialState
+import io.github.fourlastor.wilds_launcher.states.JarPickerState
+import io.github.fourlastor.wilds_launcher.states.LauncherState
+import io.github.fourlastor.wilds_launcher.states.OkDialogState
 import io.github.fourlastor.wilds_launcher.states.State
+import io.github.fourlastor.wilds_launcher.states.UpdateCheckerState
+import io.github.fourlastor.wilds_launcher.states.YesNoDialogState
 import java.io.File
 
 @Composable
 @Preview
-fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, String>?) {
+fun StateMachine(context: Context) {
     var state: State by remember { mutableStateOf(InitialState()) }
 
     if (state is InitialState) {
@@ -18,8 +29,7 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
         if (jar.isNotEmpty()) {
             if (File(jar).exists()) {
                 state = LauncherState()
-            }
-            else {
+            } else {
                 state = OkDialogState(listOf("The configured pokewilds.jar does not exist.")) { state = JarPickerState() }
             }
         }
@@ -69,11 +79,7 @@ fun StateMachine(context: Context, getPokeWildsLocation: () -> Pair<String, Stri
 
                     state = OkDialogState(listOf("Found pokewilds.jar!", "(${jarFile.absoluteFile})")) { state = LauncherState() }
                 },
-                pickJar = getPokeWildsLocation,
-                saveWildsDir = { dir, jar ->
-                    context.settingsService.setJar(File(dir, jar).absolutePath)
-                    state = LauncherState()
-                }
+                pickJar = { }
             )
         }
 
