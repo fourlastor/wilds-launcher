@@ -1,10 +1,16 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
+@Suppress(
+    // known false positive: https://github.com/gradle/gradle/issues/22797
+    "DSL_SCOPE_VIOLATION"
+)
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
-    kotlin("plugin.serialization") version "1.6.10"
+    alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 val appVersion = requireNotNull(property("io.github.fourlastor.wilds_launcher.version") as? String)
@@ -18,23 +24,8 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
-kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-            kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-        }
-        withJava()
-    }
-    @Suppress("UNUSED_VARIABLE")
-    sourceSets {
-        val jvmMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-            }
-        }
-        val jvmTest by getting
-    }
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
 }
 
 compose.desktop {
@@ -49,9 +40,24 @@ compose.desktop {
 }
 
 dependencies {
-    commonMainImplementation("net.harawata:appdirs:1.2.1")
-    commonMainImplementation("io.insert-koin:koin-core:3.2.0")
+    implementation(compose.desktop.currentOs)
+    implementation(libs.appDirs)
+    implementation(libs.dagger)
+    implementation(libs.dagger)
+    kapt(libs.daggerCompiler)
+    implementation(libs.decompose)
+    implementation(libs.decomposeCompose)
+    implementation(libs.immutableCollections)
+    implementation(libs.kotlinCoroutines)
+    implementation(libs.kotlinCoroutinesSwing)
+    implementation(libs.lwjgl)
+    implementation(libs.lwjglNfd)
+    implementation(libs.okio)
+    implementation(libs.serializationJson)
 
-    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+    val natives = arrayOf("linux", "macos", "macos-arm64", "windows")
+    for (distribution in natives) {
+        runtimeOnly("${libs.lwjgl.get()}:natives-$distribution")
+        runtimeOnly("${libs.lwjglNfd.get()}:natives-$distribution")
+    }
 }

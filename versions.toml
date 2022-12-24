@@ -1,0 +1,29 @@
+[versions]
+appDirs = "1.2.1"
+compose = "1.2.1"
+dagger = "2.44.2"
+decompose = "1.0.0-beta-02"
+immutableCollections = "0.3.5"
+kotlin = "1.7.20"
+kotlinCoroutines = "1.6.4"
+lwjgl = "3.3.1"
+okio = "3.2.0"
+serializationJson = "1.3.3"
+[libraries]
+appDirs = { module = "net.harawata:appdirs", version.ref = "appDirs" }
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+daggerCompiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decomposeCompose = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
+immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
+kotlinCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
+kotlinCoroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinCoroutines" }
+lwjgl = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
+lwjglNfd = { module = "org.lwjgl:lwjgl-nfd", version.ref = "lwjgl" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializationJson" }
+[plugins]
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
