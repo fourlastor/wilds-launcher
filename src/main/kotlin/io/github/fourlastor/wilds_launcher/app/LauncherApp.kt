@@ -28,6 +28,7 @@ class LauncherApp @Inject constructor(
     private val appInfo: AppInfo,
     private val navHostFactory: NavHostComponent.Factory,
     private val lifecycleRegistry: LifecycleRegistry,
+    private val releaseService: GitHubReleaseService,
 ) {
 
     @OptIn(ExperimentalDecomposeApi::class)
@@ -57,8 +58,6 @@ class LauncherApp @Inject constructor(
         val settingsService = SettingsService(settingsFile)
         settingsService.load()
 
-        val installDirectory = File(dataDirectory)
-        val releaseService = GitHubReleaseService(installDirectory)
 
         val logFile = File("logs.log")
         val logger: Logger = FileLogger(logFile)

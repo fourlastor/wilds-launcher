@@ -1,5 +1,6 @@
 package io.github.fourlastor.wilds_launcher.releases.services
 
+import io.github.fourlastor.wilds_launcher.app.Dirs
 import io.github.fourlastor.wilds_launcher.ui.FILENAME
 import io.github.fourlastor.wilds_launcher.ui.FILENAME_ALT
 import io.github.fourlastor.wilds_launcher.unzipArchive
@@ -11,18 +12,23 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val READ_SIZE_IN_BYTES = 1024
 
-class GitHubReleaseService(
-    private val installDirectory: File,
+@Singleton
+class GitHubReleaseService @Inject constructor(
+    private val dirs: Dirs,
 ) {
     fun findInstallation(): File? {
-        return installDirectory.walkTopDown()
+        return installDir().walkTopDown()
             .filter { it.isFile }
             .filter { it.name == FILENAME || it.name == FILENAME_ALT }
             .firstOrNull()
     }
+
+    private fun installDir() = File(dirs.data)
 
     fun getLatestReleaseVersion(): String? {
         return getLatestReleaseProperty("name")
@@ -79,7 +85,7 @@ class GitHubReleaseService(
         println("Unzipping archive...")
 
         val filenameWithoutExtension = getFilenameWithoutExtension()
-        val destination = File(installDirectory, filenameWithoutExtension)
+        val destination = File(installDir(), filenameWithoutExtension)
 
         unzipArchive(file, destination)
 
